@@ -35,9 +35,9 @@ export default function BibliotecaPage() {
           <h1 className="text-3xl font-bold">Biblioteca</h1>
           <p className="text-sm text-gray-600">{filteredBooks.length} livros encontrados</p>
         </div>
-        <Link href="/adicionar-livro">
+        {/* <Link href="/adicionar-livros">
           <Button>Adicionar Livro</Button>
-        </Link>
+        </Link> */}
       </div>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">

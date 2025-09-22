@@ -86,37 +86,37 @@ export default function AddBookPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: typeof errors = {};
-    if (!titulo.trim()) newErrors.titulo = "Título é obrigatório";
-    if (!autor.trim()) newErrors.autor = "Autor é obrigatório";
-    if (urlCapa && !urlCapaValida) newErrors.urlCapa = "URL da capa inválida";
-    setErrors(newErrors);
+  e.preventDefault();
+  const newErrors: typeof errors = {};
+  if (!titulo.trim()) newErrors.titulo = "Título é obrigatório";
+  if (!autor.trim()) newErrors.autor = "Autor é obrigatório";
+  if (urlCapa && !urlCapaValida) newErrors.urlCapa = "URL da capa inválida";
+  setErrors(newErrors);
 
-    if (Object.keys(newErrors).length > 0) return;
+  if (Object.keys(newErrors).length > 0) return;
 
-    const livro: Livro = {
-      id: crypto.randomUUID(),
-      titulo: titulo.trim(),
-      autor: autor.trim(),
-      totalPaginas: totalPaginas === "" ? undefined : Number(totalPaginas),
-      paginaAtual: paginaAtual === "" ? undefined : Number(paginaAtual),
-      statusLeitura,
-      isbn: isbn.trim() || undefined,
-      urlCapa: urlCapa.trim() || undefined,
-      genero: genero.trim() || undefined,
-      avaliacao: avaliacao > 0 ? avaliacao : undefined,
-      notasPessoais: notasPessoais.trim() || undefined,
-    };
-
-    try {
-      console.log("Livro salvo:", livro);
-      toast.success("Livro adicionado com sucesso 🚀");
-      router.push("/books");
-    } catch {
-      toast.error("Não foi possível adicionar o livro");
-    }
+  const livro: Livro = {
+    id: crypto.randomUUID(),
+    titulo: titulo.trim(),
+    autor: autor.trim(),
+    totalPaginas: totalPaginas === "" ? undefined : Number(totalPaginas),
+    paginaAtual: paginaAtual === "" ? undefined : Number(paginaAtual),
+    statusLeitura,
+    isbn: isbn.trim() || undefined,
+    urlCapa: urlCapa.trim() || undefined,
+    genero: genero.trim() || undefined,
+    avaliacao: avaliacao > 0 ? avaliacao : undefined,
+    notasPessoais: notasPessoais.trim() || undefined,
   };
+
+  try {
+    console.log("Livro salvo:", livro);
+    toast.success("Livro adicionado com sucesso 🚀");
+    router.push("/books");
+  } catch {
+    toast.error("Não foi possível adicionar o livro");
+  }
+};
 
   return (
     <div className="container mx-auto py-8">
