@@ -1,8 +1,11 @@
+'use client';
+
 import { cn } from "@/lib/utils";
 import { Book } from "@/lib/books";
 import Image from "next/image";
 import { Badge } from "./Badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 interface BookCardProps {
   book: Book;
@@ -35,8 +38,21 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
             aria-label="Ver livro"
             className="text-neutral-500 hover:text-black"
           >
+            <Link
+                href={`/livro/${book.id}`}
+                title="Visualizar detalhes do livro"
+                onClick={(e) => {
+                if (onView) {
+                  e.preventDefault();
+                  onView();
+                }
+                }}
+              >
             <Eye size={18} />
+            </Link>
+
           </button>
+
           <button
             onClick={onEdit}
             aria-label="Editar livro"
@@ -44,6 +60,7 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
           >
             <Pencil size={18} />
           </button>
+
           <button
             onClick={onDelete}
             aria-label="Excluir livro"
@@ -51,6 +68,7 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
           >
             <Trash2 size={18} />
           </button>
+
         </div>
       </div>
       
