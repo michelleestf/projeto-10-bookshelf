@@ -21,51 +21,59 @@ const statusMap = {
 
 export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-xl border shadow-sm relative">
-      <div className="absolute top-4 right-4 flex gap-2">
-        <button
-          onClick={onView}
-          aria-label="Ver livro"
-          className="text-neutral-500 hover:text-black"
-        >
-          <Eye size={18} />
-        </button>
-        <button
-          onClick={onEdit}
-          aria-label="Editar livro"
-          className="text-neutral-500 hover:text-black"
-        >
-          <Pencil size={18} />
-        </button>
-        <button
-          onClick={onDelete}
-          aria-label="Excluir livro"
-          className="text-neutral-500 hover:text-red-600"
-        >
-          <Trash2 size={18} />
-        </button>
+    <div className="p-4 bg-white rounded-xl border shadow-sm flex flex-col relative">
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex-1">
+          <div className="font-semibold text-base leading-snug line-clamp-2">
+            {book.title}
+          </div>
+          <div className="text-sm text-neutral-500">{book.author}</div>
+        </div>
+        <div className="flex gap-2 ml-2 shrink-0">
+          <button
+            onClick={onView}
+            aria-label="Ver livro"
+            className="text-neutral-500 hover:text-black"
+          >
+            <Eye size={18} />
+          </button>
+          <button
+            onClick={onEdit}
+            aria-label="Editar livro"
+            className="text-neutral-500 hover:text-black"
+          >
+            <Pencil size={18} />
+          </button>
+          <button
+            onClick={onDelete}
+            aria-label="Excluir livro"
+            className="text-neutral-500 hover:text-red-600"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
       </div>
-      <div className="w-[56px] h-[80px] flex items-center justify-center">
-        <Image
-          src={
-            book.cover || "https://covers.openlibrary.org/b/id/10909258-L.jpg"
-          }
-          alt={book.title}
-          width={56}
-          height={80}
-          className="rounded-md object-cover border w-[56px] h-[80px]"
-        />
-      </div>
-      <div className="flex-1">
-        <div className="font-semibold text-base mb-1">{book.title}</div>
-        <div className="text-sm text-neutral-500 mb-1">{book.author}</div>
-        <div className="flex items-center gap-2">
+      
+      <div className="flex items-center gap-4">
+        <div className="w-[56px] h-[80px] flex items-center justify-center">
+          <Image
+            src={
+              book.cover ||
+              "https://covers.openlibrary.org/b/id/10909258-L.jpg"
+            }
+            alt={book.title}
+            width={56}
+            height={80}
+            className="rounded-md object-cover border w-[56px] h-[80px]"
+          />
+        </div>
+        <div className="flex-1">
           {book.status && (
             <Badge color={statusMap[book.status].color as any}>
               {statusMap[book.status].label}
             </Badge>
           )}
-          <div className="flex gap-1 ml-1">
+          <div className="flex gap-1 mt-1">
             {Array.from({ length: 5 }).map((_, i) => (
               <span
                 key={i}
