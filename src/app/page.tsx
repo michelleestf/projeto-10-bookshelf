@@ -11,6 +11,7 @@ import {
   Library,
   Book,
   Search,
+  Link,
 } from "lucide-react";
 
 function getStats() {
@@ -87,10 +88,12 @@ export default function Dashboard() {
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Ações Rápidas</h2>
             <div className="grid grid-cols-2 gap-4">
-              <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
+              <Link href="./adicionar-livros">
+               <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
                 <Plus size={22} />
                 Adicionar Livro
               </button>
+              </Link>
               <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
                 <Library size={22} />
                 Ver Biblioteca
