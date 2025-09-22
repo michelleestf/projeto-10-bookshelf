@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link'; 
 import { initialBooks } from '@/lib/books';
 import { Book, ReadingStatus } from '@/lib/books';
 import { BookCard } from '@/components/ui/BookCard';
@@ -19,9 +20,9 @@ export default function BibliotecaPage() {
   const [filterStatus, setFilterStatus] = useState<ReadingStatus | 'all'>('all');
 
   const filteredBooks = initialBooks.filter(book => {
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    
+    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchTerm.toLowerCase());
+
     const matchesStatus = filterStatus === 'all' || book.status === filterStatus;
 
     return matchesSearch && matchesStatus;
@@ -34,17 +35,19 @@ export default function BibliotecaPage() {
           <h1 className="text-3xl font-bold">Biblioteca</h1>
           <p className="text-sm text-gray-600">{filteredBooks.length} livros encontrados</p>
         </div>
-        <Button>Adicionar Livro</Button>
+        <Link href="/adicionar-livro">
+          <Button>Adicionar Livro</Button>
+        </Link>
       </div>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
-        <Input 
-          placeholder="Buscar por título ou autor..." 
+        <Input
+          placeholder="Buscar por título ou autor..."
           className="flex-1"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        
+
         <Select>
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Filtrar por gênero" />
@@ -54,7 +57,7 @@ export default function BibliotecaPage() {
           </SelectContent>
         </Select>
 
-        <Select 
+        <Select
           onValueChange={(value: ReadingStatus | 'all') => setFilterStatus(value)}
           defaultValue="all"
         >

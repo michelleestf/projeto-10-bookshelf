@@ -1,6 +1,7 @@
 import { initialBooks } from "@/lib/books";
-import { Card } from "@/components/ui/Card";
+import { Card } from "@/components/ui/card";
 import { BookCard } from "@/components/ui/BookCard";
+
 import {
   BookOpen,
   Users,
