@@ -1,6 +1,7 @@
 import { BookOpen, Home, Library, Plus } from "lucide-react";
 import Link from "next/link";
 
+
 export function Header() {
   return (
     <header className="w-full border-b bg-white sticky top-0 z-20">
@@ -25,7 +26,7 @@ export function Header() {
             <span className="hidden sm:inline">Biblioteca</span>
           </Link>
           <Link
-            href="/novo"
+            href="/adicionar-livros"
             className="ml-4 bg-black text-white px-4 py-2 rounded-md font-semibold hover:bg-neutral-800 transition flex items-center gap-2"
           >
             <Plus size={18} className="text-white" />
