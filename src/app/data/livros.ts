@@ -1,0 +1,55 @@
+import { Livro } from '../lib/types';
+
+export const livrosIniciais: Livro[] = [
+  {
+    id: '1',
+    title: 'O Senhor dos Anéis: A Sociedade do Anel',
+    author: 'J.R.R. Tolkien',
+    genre: 'Fantasia',
+    year: 1954,
+    rating: 5,
+    cover: '/images/sociedade-anel.jpg', // Adicione a imagem na pasta public
+    status: 'LIDO',
+  },
+  {
+    id: '2',
+    title: '1984',
+    author: 'George Orwell',
+    genre: 'Distopia',
+    year: 1949,
+    rating: 4,
+    cover: '/images/1984.jpg',
+    status: 'LENDO',
+    pages: 328,
+  },
+  {
+    id: '3',
+    title: 'Sapiens: Uma Breve História da Humanidade',
+    author: 'Yuval Noah Harari',
+    genre: 'História',
+    year: 2011,
+    rating: 5,
+    cover: '/images/sapiens.jpg',
+    status: 'QUERO_LER',
+  },
+  {
+    id: '4',
+    title: 'O Código Limpo',
+    author: 'Robert C. Martin',
+    genre: 'Tecnologia',
+    year: 2008,
+    rating: 4,
+    cover: '/images/codigo-limpo.jpg',
+    status: 'PAUSADO',
+  },
+  {
+    id: '5',
+    title: 'Cem Anos de Solidão',
+    author: 'Gabriel García Márquez',
+    genre: 'Realismo Mágico',
+    year: 1967,
+    rating: 5,
+    cover: '/images/cem-anos.jpg',
+    status: 'LIDO',
+  },
+];
