@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import Image from "next/image";
 
 type Livro = {
   id: string;
@@ -86,37 +87,37 @@ export default function AddBookPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const newErrors: typeof errors = {};
-  if (!titulo.trim()) newErrors.titulo = "Título é obrigatório";
-  if (!autor.trim()) newErrors.autor = "Autor é obrigatório";
-  if (urlCapa && !urlCapaValida) newErrors.urlCapa = "URL da capa inválida";
-  setErrors(newErrors);
+    e.preventDefault();
+    const newErrors: typeof errors = {};
+    if (!titulo.trim()) newErrors.titulo = "Título é obrigatório";
+    if (!autor.trim()) newErrors.autor = "Autor é obrigatório";
+    if (urlCapa && !urlCapaValida) newErrors.urlCapa = "URL da capa inválida";
+    setErrors(newErrors);
 
-  if (Object.keys(newErrors).length > 0) return;
+    if (Object.keys(newErrors).length > 0) return;
 
-  const livro: Livro = {
-    id: crypto.randomUUID(),
-    titulo: titulo.trim(),
-    autor: autor.trim(),
-    totalPaginas: totalPaginas === "" ? undefined : Number(totalPaginas),
-    paginaAtual: paginaAtual === "" ? undefined : Number(paginaAtual),
-    statusLeitura,
-    isbn: isbn.trim() || undefined,
-    urlCapa: urlCapa.trim() || undefined,
-    genero: genero.trim() || undefined,
-    avaliacao: avaliacao > 0 ? avaliacao : undefined,
-    notasPessoais: notasPessoais.trim() || undefined,
+    const livro: Livro = {
+      id: crypto.randomUUID(),
+      titulo: titulo.trim(),
+      autor: autor.trim(),
+      totalPaginas: totalPaginas === "" ? undefined : Number(totalPaginas),
+      paginaAtual: paginaAtual === "" ? undefined : Number(paginaAtual),
+      statusLeitura,
+      isbn: isbn.trim() || undefined,
+      urlCapa: urlCapa.trim() || undefined,
+      genero: genero.trim() || undefined,
+      avaliacao: avaliacao > 0 ? avaliacao : undefined,
+      notasPessoais: notasPessoais.trim() || undefined,
+    };
+
+    try {
+      console.log("Livro salvo:", livro);
+      toast.success("Livro adicionado com sucesso 🚀");
+      router.push("/books");
+    } catch {
+      toast.error("Não foi possível adicionar o livro");
+    }
   };
-
-  try {
-    console.log("Livro salvo:", livro);
-    toast.success("Livro adicionado com sucesso 🚀");
-    router.push("/books");
-  } catch {
-    toast.error("Não foi possível adicionar o livro");
-  }
-};
 
   return (
     <div className="container mx-auto py-8">
@@ -180,7 +181,9 @@ export default function AddBookPage() {
 
         <Select
           value={statusLeitura}
-          onValueChange={(v) => setStatusLeitura(v as any)}
+          onValueChange={(v) =>
+            setStatusLeitura(v as "não iniciado" | "lendo" | "concluído")
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="Status de leitura" />
@@ -210,11 +213,15 @@ export default function AddBookPage() {
         </div>
 
         {urlCapaValida && (
-          <img
-            src={urlCapa}
-            alt="Preview da Capa"
-            className="w-32 h-auto border rounded"
-          />
+          <div className="w-32 h-auto border rounded overflow-hidden">
+            <Image
+              src={urlCapa}
+              alt="Preview da Capa"
+              width={128}
+              height={192}
+              className="object-cover w-full h-auto"
+            />
+          </div>
         )}
 
         <Input
