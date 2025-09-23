@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
+import { Book } from "@/lib/books";
 
-let books: any[] = []; // memória (cada vez que reinicia o server, limpa)
+const books: Book[] = []; // memória (cada vez que reinicia o server, limpa)
 
 export async function GET() {
   return NextResponse.json(books);
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  const body: Book = await req.json();
   books.push(body);
-  return NextResponse.json({ message: "Livro adicionado", book: body }, { status: 201 });
+  return NextResponse.json(
+    { message: "Livro adicionado", book: body },
+    { status: 201 }
+  );
 }
