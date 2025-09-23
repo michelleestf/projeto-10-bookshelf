@@ -1,8 +1,7 @@
 import { initialBooks } from "@/lib/books";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
 import Link from "next/link";
-
 
 import {
   BookOpen,
@@ -89,8 +88,10 @@ export default function Dashboard() {
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Ações Rápidas</h2>
             <div className="grid grid-cols-2 gap-4">
-              <Link href="/adicionar-livros"
-                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
+              <Link
+                href="/adicionar-livros"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+              >
                 <Plus size={22} />
                 Adicionar Livro
               </Link>
