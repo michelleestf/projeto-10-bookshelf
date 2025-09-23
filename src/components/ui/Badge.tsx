@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 interface BadgeProps {
   children: ReactNode;
-  color?: "default" | "success" | "warning" | "danger";
+  color?: "default" | "success" | "warning" | "danger" | "info" | "muted";
   className?: string;
 }
 

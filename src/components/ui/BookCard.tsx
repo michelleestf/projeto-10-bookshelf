@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { cn } from "@/lib/utils";
 import { Book } from "@/lib/books";
@@ -39,18 +39,17 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
             className="text-neutral-500 hover:text-black"
           >
             <Link
-                href={`/livro/${book.id}`}
-                title="Visualizar detalhes do livro"
-                onClick={(e) => {
+              href={`/livro/${book.id}`}
+              title="Visualizar detalhes do livro"
+              onClick={(e) => {
                 if (onView) {
                   e.preventDefault();
                   onView();
                 }
-                }}
-              >
-            <Eye size={18} />
+              }}
+            >
+              <Eye size={18} />
             </Link>
-
           </button>
 
           <button
@@ -68,16 +67,14 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
           >
             <Trash2 size={18} />
           </button>
-
         </div>
       </div>
-      
+
       <div className="flex items-center gap-4">
         <div className="w-[56px] h-[80px] flex items-center justify-center">
           <Image
             src={
-              book.cover ||
-              "https://covers.openlibrary.org/b/id/10909258-L.jpg"
+              book.cover || "https://covers.openlibrary.org/b/id/10909258-L.jpg"
             }
             alt={book.title}
             width={56}
@@ -87,7 +84,16 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
         </div>
         <div className="flex-1">
           {book.status && (
-            <Badge color={statusMap[book.status].color as any}>
+            <Badge
+              color={
+                statusMap[book.status].color as
+                  | "info"
+                  | "success"
+                  | "muted"
+                  | "warning"
+                  | "danger"
+              }
+            >
               {statusMap[book.status].label}
             </Badge>
           )}

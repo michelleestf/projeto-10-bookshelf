@@ -1,29 +1,33 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link'; 
-import { initialBooks } from '@/lib/books';
-import { Book, ReadingStatus } from '@/lib/books';
-import { BookCard } from '@/components/ui/BookCard';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import Link from "next/link";
+import { initialBooks } from "@/lib/books";
+import { Book, ReadingStatus } from "@/lib/books";
+import { BookCard } from "@/components/ui/BookCard";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 export default function BibliotecaPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<ReadingStatus | 'all'>('all');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState<ReadingStatus | "all">(
+    "all"
+  );
 
-  const filteredBooks = initialBooks.filter(book => {
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredBooks = initialBooks.filter((book) => {
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = filterStatus === 'all' || book.status === filterStatus;
+    const matchesStatus =
+      filterStatus === "all" || book.status === filterStatus;
 
     return matchesSearch && matchesStatus;
   });
@@ -33,7 +37,9 @@ export default function BibliotecaPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Biblioteca</h1>
-          <p className="text-sm text-gray-600">{filteredBooks.length} livros encontrados</p>
+          <p className="text-sm text-gray-600">
+            {filteredBooks.length} livros encontrados
+          </p>
         </div>
         {/* <Link href="/adicionar-livros">
           <Button>Adicionar Livro</Button>
@@ -58,7 +64,9 @@ export default function BibliotecaPage() {
         </Select>
 
         <Select
-          onValueChange={(value: ReadingStatus | 'all') => setFilterStatus(value)}
+          onValueChange={(value: ReadingStatus | "all") =>
+            setFilterStatus(value)
+          }
           defaultValue="all"
         >
           <SelectTrigger className="w-48">
