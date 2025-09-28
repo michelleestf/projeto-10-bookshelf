@@ -33,17 +33,14 @@ export default function BibliotecaPage() {
   });
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Biblioteca</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="text-4xl font-bold mb-2">Biblioteca</h1>
+          <p className="text-neutral-600 text-lg">
             {filteredBooks.length} livros encontrados
           </p>
         </div>
-        {/* <Link href="/adicionar-livros">
-          <Button>Adicionar Livro</Button>
-        </Link> */}
       </div>
 
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
@@ -83,9 +80,9 @@ export default function BibliotecaPage() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {filteredBooks.map((book) => (
-          <BookCard key={book.id} book={book} />
+          <BookCard key={book.id} book={book} showDetails />
         ))}
       </div>
     </div>

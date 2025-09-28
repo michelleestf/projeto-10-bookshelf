@@ -120,18 +120,12 @@ export default function AddBookPage() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      {/* Header com título e botão voltar */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold">Adicionar Livro</h1>
-          <p className="text-sm text-gray-600">
-            Preencha os campos abaixo para cadastrar um novo livro
-          </p>
-        </div>
-        <Link href="/books">
-          <Button variant="outline">Voltar</Button>
-        </Link>
+    <main className="max-w-7xl mx-auto px-6 py-10">
+      <div>
+        <h1 className="text-4xl font-bold mb-2">Adicionar Livro</h1>
+        <p className="text-neutral-600 mb-8 text-lg">
+          Preencha os campos abaixo para cadastrar um novo livro
+        </p>
       </div>
 
       {/* Formulário */}
@@ -251,6 +245,6 @@ export default function AddBookPage() {
           Adicionar Livro
         </Button>
       </form>
-    </div>
+    </main>
   );
 }
