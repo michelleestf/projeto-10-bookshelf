@@ -12,7 +12,7 @@ interface BookCardProps {
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
-  showDetails?: boolean; // mostra gênero, ano, progresso
+  showDetails?: boolean;
 }
 
 const statusMap = {
@@ -30,7 +30,6 @@ export function BookCard({
   onDelete,
   showDetails,
 }: BookCardProps) {
-  // progresso só se status for LENDO e tiver pages e currentPage
   const progresso =
     book.status === "LENDO" && book.pages && book.currentPage
       ? Math.round((book.currentPage / book.pages) * 100)
