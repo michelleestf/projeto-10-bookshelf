@@ -95,18 +95,24 @@ export default function Dashboard() {
                 <Plus size={22} />
                 Adicionar Livro
               </Link>
-              <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
+              <Link
+                href="/biblioteca"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+              >
                 <Library size={22} />
                 Ver Biblioteca
-              </button>
+              </Link>
               <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
                 <Book size={22} />
                 Lendo Agora
               </button>
-              <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
+              <Link
+                href="/biblioteca"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+              >
                 <Search size={22} />
                 Buscar Livros
-              </button>
+              </Link>
             </div>
           </Card>
         </aside>
