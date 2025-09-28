@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { initialBooks } from "@/lib/books";
 import { Book, ReadingStatus } from "@/lib/books";
@@ -21,6 +21,18 @@ export default function BibliotecaPage() {
   const [filterStatus, setFilterStatus] = useState<ReadingStatus | "">("");
   const [filterGenre, setFilterGenre] = useState<string | "">("");
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const busca = params.get("busca") || params.get("search") || "";
+      const genero = params.get("genero") || params.get("genre") || "";
+      const status = params.get("status") || "";
+      if (busca) setSearchTerm(busca);
+      if (genero) setFilterGenre(genero);
+      if (status) setFilterStatus(status as ReadingStatus);
+    }
+  }, []);
+
   const genres = Array.from(
     new Set(initialBooks.map((book) => book.genre).filter(Boolean))
   );
@@ -35,6 +47,17 @@ export default function BibliotecaPage() {
 
     return matchesSearch && matchesStatus && matchesGenre;
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set("busca", searchTerm);
+    if (filterGenre) params.set("genero", filterGenre);
+    if (filterStatus) params.set("status", filterStatus);
+    const url = params.toString()
+      ? `/biblioteca?${params.toString()}`
+      : `/biblioteca`;
+    window.history.replaceState(null, "", url);
+  }, [searchTerm, filterGenre, filterStatus]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">

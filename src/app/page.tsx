@@ -102,10 +102,13 @@ export default function Dashboard() {
                 <Library size={22} />
                 Ver Biblioteca
               </Link>
-              <button className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition">
+              <Link
+                href="/biblioteca?status=LENDO"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+              >
                 <Book size={22} />
                 Lendo Agora
-              </button>
+              </Link>
               <Link
                 href="/biblioteca"
                 className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
