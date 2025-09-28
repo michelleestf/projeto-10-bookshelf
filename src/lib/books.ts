@@ -16,6 +16,7 @@ export interface Book {
   synopsis?: string;
   cover?: string;
   status?: ReadingStatus;
+  currentPage?: number; // página atual para progresso
 }
 
 export const initialBooks: Book[] = [
@@ -25,6 +26,7 @@ export const initialBooks: Book[] = [
     author: "George Orwell",
     genre: "Distopia",
     year: 1949,
+    currentPage: 150,
     pages: 328,
     rating: 4,
     synopsis: "Um clássico sobre um regime totalitário e vigilância extrema.",

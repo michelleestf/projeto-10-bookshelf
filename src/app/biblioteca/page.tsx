@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { initialBooks } from "@/lib/books";
 import { Book, ReadingStatus } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -17,8 +18,23 @@ import {
 
 export default function BibliotecaPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<ReadingStatus | "all">(
-    "all"
+  const [filterStatus, setFilterStatus] = useState<ReadingStatus | "">("");
+  const [filterGenre, setFilterGenre] = useState<string | "">("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const busca = params.get("busca") || params.get("search") || "";
+      const genero = params.get("genero") || params.get("genre") || "";
+      const status = params.get("status") || "";
+      if (busca) setSearchTerm(busca);
+      if (genero) setFilterGenre(genero);
+      if (status) setFilterStatus(status as ReadingStatus);
+    }
+  }, []);
+
+  const genres = Array.from(
+    new Set(initialBooks.map((book) => book.genre).filter(Boolean))
   );
 
   const filteredBooks = initialBooks.filter((book) => {
@@ -26,27 +42,35 @@ export default function BibliotecaPage() {
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus =
-      filterStatus === "all" || book.status === filterStatus;
+    const matchesStatus = !filterStatus || book.status === filterStatus;
+    const matchesGenre = !filterGenre || book.genre === filterGenre;
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && matchesStatus && matchesGenre;
   });
 
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchTerm) params.set("busca", searchTerm);
+    if (filterGenre) params.set("genero", filterGenre);
+    if (filterStatus) params.set("status", filterStatus);
+    const url = params.toString()
+      ? `/biblioteca?${params.toString()}`
+      : `/biblioteca`;
+    window.history.replaceState(null, "", url);
+  }, [searchTerm, filterGenre, filterStatus]);
+
   return (
-    <div className="container mx-auto py-8">
+    <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">Biblioteca</h1>
-          <p className="text-sm text-gray-600">
+          <h1 className="text-4xl font-bold mb-2">Biblioteca</h1>
+          <p className="text-neutral-600 text-lg">
             {filteredBooks.length} livros encontrados
           </p>
         </div>
-        {/* <Link href="/adicionar-livros">
-          <Button>Adicionar Livro</Button>
-        </Link> */}
       </div>
 
-      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-2">
         <Input
           placeholder="Buscar por título ou autor..."
           className="flex-1"
@@ -54,26 +78,31 @@ export default function BibliotecaPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
         />
 
-        <Select>
-          <SelectTrigger className="w-48">
+        <Select
+          value={filterGenre}
+          onValueChange={(value: string) => setFilterGenre(value)}
+        >
+          <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filtrar por gênero" />
           </SelectTrigger>
           <SelectContent>
-            {/* Adicione os itens de gênero aqui */}
+            {genres
+              .filter((g): g is string => !!g)
+              .map((genre) => (
+                <SelectItem key={genre} value={genre}>
+                  {genre}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
-
         <Select
-          onValueChange={(value: ReadingStatus | "all") =>
-            setFilterStatus(value)
-          }
-          defaultValue="all"
+          value={filterStatus}
+          onValueChange={(value: ReadingStatus | "") => setFilterStatus(value)}
         >
-          <SelectTrigger className="w-48">
+          <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Todos</SelectItem>
             <SelectItem value="LIDO">Lido</SelectItem>
             <SelectItem value="LENDO">Lendo</SelectItem>
             <SelectItem value="QUERO_LER">Quero Ler</SelectItem>
@@ -83,10 +112,33 @@ export default function BibliotecaPage() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {filteredBooks.map((book) => (
-          <BookCard key={book.id} book={book} />
-        ))}
+      {(searchTerm || filterGenre || filterStatus) && (
+        <div className="flex justify-end mb-8">
+          <Button
+            variant="outline"
+            className="flex items-center gap-1 text-xs px-2 py-1 h-7"
+            onClick={() => {
+              setSearchTerm("");
+              setFilterGenre("");
+              setFilterStatus("");
+            }}
+          >
+            Limpar filtros
+            <X className="w-3.5 h-3.5 ml-1" />
+          </Button>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-6">
+        {filteredBooks.length === 0 ? (
+          <div className="col-span-full text-center text-neutral-500 py-12 text-lg">
+            Nenhum livro encontrado com os filtros atuais.
+          </div>
+        ) : (
+          filteredBooks.map((book) => (
+            <BookCard key={book.id} book={book} showDetails />
+          ))
+        )}
       </div>
     </div>
   );
