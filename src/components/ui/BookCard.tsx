@@ -39,22 +39,22 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
             className="text-neutral-500 hover:text-black"
           >
             <Link
-                href={`/livro/${book.id}`}
-                title="Visualizar detalhes do livro"
-                onClick={(e) => {
+              href={`/livro/${book.id}`}
+              title="Visualizar detalhes do livro"
+              onClick={(e) => {
                 if (onView) {
                   e.preventDefault();
                   onView();
                 }
-                }}
-              >
-            <Eye size={18} />
+              }}
+            >
+              <Eye size={18} />
             </Link>
 
           </button>
 
           <button
-            onClick={onEdit}
+            onClick={() => onEdit && onEdit()}
             aria-label="Editar livro"
             className="text-neutral-500 hover:text-black"
           >
@@ -62,7 +62,7 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
           </button>
 
           <button
-            onClick={onDelete}
+            onClick={() => onDelete && onDelete()}
             aria-label="Excluir livro"
             className="text-neutral-500 hover:text-red-600"
           >
@@ -71,7 +71,7 @@ export function BookCard({ book, onView, onEdit, onDelete }: BookCardProps) {
 
         </div>
       </div>
-      
+
       <div className="flex items-center gap-4">
         <div className="w-[56px] h-[80px] flex items-center justify-center">
           <Image
