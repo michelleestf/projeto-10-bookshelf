@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Eye, Save } from "lucide-react";
+import { Star, Eye, Save, ArrowLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -161,6 +161,22 @@ export default function AdicionarLivros() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-4xl font-bold mb-2">Adicionar Novo Livro</h1>
+          <p className="text-neutral-600 text-lg">
+            Preencha as informações do livro que deseja adicionar à sua
+            biblioteca.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeft size={16} /> Voltar
+        </Button>
+      </div>
       {/* Progresso do Preenchimento */}
       <Card className="mb-6">
         <h2 className="text-lg font-semibold mb-2">
