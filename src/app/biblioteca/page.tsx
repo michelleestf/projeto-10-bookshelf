@@ -160,7 +160,7 @@ export default function BibliotecaPage() {
           </div>
         ) : (
           filteredBooks.map((book) => (
-            <BookCard key={book.id} book={book} showDetails />
+            <BookCard key={book.id} book={book} showDetails showDeleteButton />
           ))
         )}
       </div>
