@@ -18,6 +18,8 @@ import type { ReadingStatus, Genre, Book } from "@/lib/books";
 import { genres } from "@/lib/books";
 import { toast } from "react-toastify";
 import { ArrowLeft, Save, Star } from "lucide-react";
+import NotFound from "@/components/ui/NotFound";
+import { EditarLivroSkeleton } from "@/components/ui/EditarLivroSkeleton";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditarLivroPage() {
@@ -188,16 +190,34 @@ export default function EditarLivroPage() {
   );
 
   if (loading) {
-    return <div className="max-w-7xl mx-auto px-6 py-10">Carregando...</div>;
+    return (
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Editar Livro</h1>
+            <p className="text-neutral-600 text-lg">
+              Altere as informações do livro e salve as mudanças.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={() => window.history.back()}
+          >
+            <ArrowLeft size={16} /> Voltar
+          </Button>
+        </div>
+        <EditarLivroSkeleton />
+      </div>
+    );
   }
 
   if (!book) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-10">Livro não encontrado.</div>
+      <NotFound message="O livro que você está tentando acessar não existe ou foi removido." />
     );
   }
 
-  // O restante do formulário é igual ao de adicionar, mas usando os states acima
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex justify-between items-center mb-6">
