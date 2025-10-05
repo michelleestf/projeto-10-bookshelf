@@ -131,7 +131,7 @@ export function BookCard({
           <button
             onClick={onDelete}
             aria-label="Excluir livro"
-            className="text-neutral-500 hover:text-red-600"
+            className="text-neutral-500 hover:text-red-600 cursor-pointer"
           >
             <Trash2 size={20} />
           </button>
