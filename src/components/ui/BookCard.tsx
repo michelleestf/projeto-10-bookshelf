@@ -5,6 +5,8 @@ import { Book } from "@/lib/books";
 import Image from "next/image";
 import { Badge } from "./Badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { Progress } from "@/components/ui/progress";
 
 interface BookCardProps {
@@ -13,8 +15,8 @@ interface BookCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   showDetails?: boolean;
+  showDeleteButton?: boolean;
 }
-
 const statusMap = {
   QUERO_LER: { label: "Quero Ler", color: "info" },
   LENDO: { label: "Lendo", color: "success" },
@@ -29,7 +31,9 @@ export function BookCard({
   onEdit,
   onDelete,
   showDetails,
+  showDeleteButton,
 }: BookCardProps) {
+  const [showDelete, setShowDelete] = useState(false);
   const progresso =
     book.status === "LENDO" && book.pages && book.currentPage
       ? Math.round((book.currentPage / book.pages) * 100)
@@ -127,14 +131,22 @@ export function BookCard({
         >
           <Pencil size={20} />
         </button>
-        {onDelete && (
-          <button
-            onClick={onDelete}
-            aria-label="Excluir livro"
-            className="text-neutral-500 hover:text-red-600 cursor-pointer"
-          >
-            <Trash2 size={20} />
-          </button>
+        {showDeleteButton && (
+          <>
+            <button
+              onClick={() => setShowDelete(true)}
+              aria-label="Excluir livro"
+              className="text-neutral-500 hover:text-red-600 cursor-pointer"
+            >
+              <Trash2 size={20} />
+            </button>
+            <ConfirmDeleteModal
+              open={!!showDelete}
+              bookTitle={book.title}
+              bookId={book.id}
+              onCancel={() => setShowDelete(false)}
+            />
+          </>
         )}
       </div>
     </div>

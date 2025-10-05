@@ -2,6 +2,7 @@
 
 import { use } from "react";
 import { useState } from "react";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
 import { initialBooks, Book } from "@/lib/books";
 import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
@@ -44,12 +45,8 @@ export default function BookPage({
       <NotFound message="O livro que você está tentando acessar não existe ou foi removido." />
     );
 
-  const handleDelete = () => {
-    if (confirm("Deseja excluir este livro?")) {
-      setBooks((prev) => prev.filter((b) => b.id !== book.id));
-      router.push("/biblioteca");
-    }
-  };
+  const [showDelete, setShowDelete] = useState(false);
+  const handleDeleteClick = () => setShowDelete(true);
 
   const handleEdit = () => {
     router.push(`/livro/${book.id}/editar`);
@@ -91,10 +88,16 @@ export default function BookPage({
             <Button
               variant="outline"
               className="w-full flex items-center gap-2 justify-center text-base font-semibold bg-red-600 hover:bg-red-700 text-white border-none"
-              onClick={handleDelete}
+              onClick={handleDeleteClick}
             >
               <Trash2 size={18} /> Excluir Livro
             </Button>
+            <ConfirmDeleteModal
+              open={showDelete}
+              bookTitle={book.title}
+              bookId={book.id}
+              onCancel={() => setShowDelete(false)}
+            />
           </div>
         </div>
         {/* Informações do livro */}
