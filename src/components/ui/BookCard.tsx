@@ -113,31 +113,25 @@ export function BookCard({
       {/* Ações */}
       <div className="flex flex-col gap-2 ml-4 shrink-0 items-end justify-center">
         <button
-          onClick={onView}
+          onClick={() => {
+            window.location.href = `/livro/${book.id}`;
+          }}
           aria-label="Ver livro"
-          className="text-neutral-500 hover:text-black"
+          className="text-neutral-500 hover:text-black cursor-pointer"
+          title="Visualizar detalhes do livro"
         >
-          <Link
-            href={`/livro/${book.id}`}
-            title="Visualizar detalhes do livro"
-            onClick={(e) => {
-              if (onView) {
-                e.preventDefault();
-                onView();
-              }
-            }}
-          >
-            <Eye size={20} />
-          </Link>
+          <Eye size={20} />
         </button>
-        <Link
-          href={`/livro/${book.id}/editar`}
+        <button
+          onClick={() => {
+            window.location.href = `/livro/${book.id}/editar`;
+          }}
           aria-label="Editar livro"
-          className="text-neutral-500 hover:text-black"
+          className="text-neutral-500 hover:text-black cursor-pointer"
           title="Editar livro"
         >
           <Pencil size={20} />
-        </Link>
+        </button>
         {onDelete && (
           <button
             onClick={onDelete}
