@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Badge } from "./Badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import Link from "next/link";
 
 interface BookCardProps {
   book: Book;

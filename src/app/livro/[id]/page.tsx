@@ -52,12 +52,7 @@ export default function BookPage({
   };
 
   const handleEdit = () => {
-    const newTitle = prompt("Editar título do livro:", book.title);
-    if (newTitle && newTitle.trim() !== "") {
-      setBooks((prev) =>
-        prev.map((b) => (b.id === book.id ? { ...b, title: newTitle } : b))
-      );
-    }
+    router.push(`/livro/${book.id}/editar`);
   };
 
   // Datas fictícias substituídas por campos reais se existirem
