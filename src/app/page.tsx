@@ -31,7 +31,7 @@ export default function Dashboard() {
         Bem-vindo à sua biblioteca pessoal. Aqui você pode acompanhar seu
         progresso de leitura.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-1">
             <span className="text-base font-semibold text-neutral-800">
@@ -73,7 +73,7 @@ export default function Dashboard() {
           <div className="text-xs text-neutral-400">Total acumulado</div>
         </Card>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Livros Recentes</h2>

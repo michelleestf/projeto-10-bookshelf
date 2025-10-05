@@ -76,19 +76,23 @@ export function BookCard({
             <span className="text-neutral-500 text-sm ml-1">{book.year}</span>
           )}
         </div>
-        <div className="flex gap-1 mt-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span
-              key={i}
-              className={cn(
-                i < (book.rating || 0) ? "text-yellow-400" : "text-neutral-300",
-                "text-base"
-              )}
-            >
-              ★
-            </span>
-          ))}
-        </div>
+        {typeof book.rating === "number" && book.rating > 0 && (
+          <div className="flex gap-1 mt-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  i < (book.rating ?? 0)
+                    ? "text-yellow-400"
+                    : "text-neutral-300",
+                  "text-base"
+                )}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        )}
         {showDetails && progresso !== null && (
           <>
             <div className="text-xs text-neutral-500 mt-2 flex justify-between">

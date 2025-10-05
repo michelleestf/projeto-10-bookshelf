@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { initialBooks } from "@/lib/books";
 import { Book, ReadingStatus } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
-import { Input } from "@/components/ui/input";
+
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
@@ -15,11 +14,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 export default function BibliotecaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<ReadingStatus | "">("");
   const [filterGenre, setFilterGenre] = useState<string | "">("");
+  const [books, setBooks] = useState<Book[]>([]);
+
+  // Carregar livros do localStorage ou initialBooks
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("bookshelf-books");
+      let userBooks: Book[] = [];
+      if (stored) {
+        try {
+          userBooks = JSON.parse(stored);
+        } catch {
+          userBooks = [];
+        }
+      }
+      // Mesclar sem duplicar pelo id
+      const allBooks = [
+        ...initialBooks,
+        ...userBooks.filter(
+          (ub) => !initialBooks.some((ib) => ib.id === ub.id)
+        ),
+      ];
+      setBooks(allBooks);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -34,10 +58,10 @@ export default function BibliotecaPage() {
   }, []);
 
   const genres = Array.from(
-    new Set(initialBooks.map((book) => book.genre).filter(Boolean))
+    new Set(books.map((book) => book.genre).filter(Boolean))
   );
 
-  const filteredBooks = initialBooks.filter((book) => {
+  const filteredBooks = books.filter((book) => {
     const matchesSearch =
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
@@ -129,7 +153,7 @@ export default function BibliotecaPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
         {filteredBooks.length === 0 ? (
           <div className="col-span-full text-center text-neutral-500 py-12 text-lg">
             Nenhum livro encontrado com os filtros atuais.
