@@ -38,6 +38,8 @@ export interface Book {
   currentPage?: number;
   notes?: string;
   isbn?: string;
+  addedAt?: string; // data de adição (formato ISO ou dd/mm/yyyy)
+  updatedAt?: string; // data de atualização (formato ISO ou dd/mm/yyyy)
 }
 
 export const initialBooks: Book[] = [

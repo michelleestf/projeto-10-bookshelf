@@ -5,6 +5,7 @@ import { Book } from "@/lib/books";
 import Image from "next/image";
 import { Badge } from "./Badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 
 interface BookCardProps {
@@ -101,12 +102,7 @@ export function BookCard({
                 {book.currentPage}/{book.pages} ({progresso}%)
               </span>
             </div>
-            <div className="w-full h-2 bg-neutral-200 rounded-full overflow-hidden mt-1">
-              <div
-                className="h-2 bg-black rounded-full"
-                style={{ width: `${progresso}%` }}
-              />
-            </div>
+            <Progress value={progresso} className="h-2 mt-1" />
           </>
         )}
       </div>
