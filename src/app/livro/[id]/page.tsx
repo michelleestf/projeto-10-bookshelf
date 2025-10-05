@@ -45,7 +45,6 @@ export default function BookPage({
       <NotFound message="O livro que você está tentando acessar não existe ou foi removido." />
     );
 
-
   const [showDelete, setShowDelete] = useState(false);
   const handleDeleteClick = () => setShowDelete(true);
 
