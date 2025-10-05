@@ -161,21 +161,25 @@ export default function AdicionarLivros() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Adicionar Novo Livro</h1>
-          <p className="text-neutral-600 text-lg">
-            Preencha as informações do livro que deseja adicionar à sua
-            biblioteca.
-          </p>
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="order-2 sm:order-1">
+            <h1 className="text-3xl font-bold mb-2">Adicionar Novo Livro</h1>
+            <p className="text-neutral-600 text-lg">
+              Preencha as informações do livro que deseja adicionar à sua
+              biblioteca.
+            </p>
+          </div>
+          <div className="order-1 sm:order-2 flex justify-end">
+            <Button
+              variant="outline"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeft size={16} /> Voltar
+            </Button>
+          </div>
         </div>
-        <Button
-          variant="outline"
-          className="flex items-center gap-1 cursor-pointer"
-          onClick={() => window.history.back()}
-        >
-          <ArrowLeft size={16} /> Voltar
-        </Button>
       </div>
       {/* Progresso do Preenchimento */}
       <Card className="mb-6">
