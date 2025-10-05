@@ -1,10 +1,8 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import { initialBooks } from "@/lib/books";
+import BibliotecaSkeleton from "@/components/ui/BibliotecaSkeleton";
+import { useEffect, useState, useMemo } from "react";
 import { Book, ReadingStatus } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
-
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import {
@@ -15,114 +13,105 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/Input";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "react-toastify";
+
+function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
 
 export default function BibliotecaPage() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<ReadingStatus | "">("");
-  const [filterGenre, setFilterGenre] = useState<string | "">("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [books, setBooks] = useState<Book[]>([]);
-
-  // Carregar livros do localStorage ou initialBooks
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("bookshelf-books");
-      let userBooks: Book[] = [];
-      if (stored) {
-        try {
-          userBooks = JSON.parse(stored);
-        } catch {
-          userBooks = [];
-        }
-      }
-      // Mesclar sem duplicar pelo id
-      const allBooks = [
-        ...initialBooks,
-        ...userBooks.filter(
-          (ub) => !initialBooks.some((ib) => ib.id === ub.id)
-        ),
-      ];
-      setBooks(allBooks);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const busca = params.get("busca") || params.get("search") || "";
-      const genero = params.get("genero") || params.get("genre") || "";
-      const status = params.get("status") || "";
-      if (busca) setSearchTerm(busca);
-      if (genero) setFilterGenre(genero);
-      if (status) setFilterStatus(status as ReadingStatus);
-    }
-  }, []);
-
-  const genres = Array.from(
-    new Set(books.map((book) => book.genre).filter(Boolean))
-  );
-
-  const filteredBooks = books.filter((book) => {
-    const matchesSearch =
-      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesStatus = !filterStatus || book.status === filterStatus;
-    const matchesGenre = !filterGenre || book.genre === filterGenre;
-
-    return matchesSearch && matchesStatus && matchesGenre;
-  });
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [genre, setGenre] = useState(searchParams.get("genre") || "");
+  const [status, setStatus] = useState(searchParams.get("status") || "");
+  const [loading, setLoading] = useState(true);
+  const [genres, setGenres] = useState<string[]>([]);
 
   useEffect(() => {
     const params = new URLSearchParams();
-    if (searchTerm) params.set("busca", searchTerm);
-    if (filterGenre) params.set("genero", filterGenre);
-    if (filterStatus) params.set("status", filterStatus);
-    const url = params.toString()
-      ? `/biblioteca?${params.toString()}`
-      : `/biblioteca`;
-    window.history.replaceState(null, "", url);
-  }, [searchTerm, filterGenre, filterStatus]);
+    if (search) params.set("search", search);
+    if (genre) params.set("genre", genre);
+    if (status) params.set("status", status);
+    router.replace(`/biblioteca?${params.toString()}`);
+  }, [search, genre, status, router]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+  }, []);
+
+  const fetchBooks = useMemo(
+    () =>
+      debounce(
+        async (
+          searchValue: string,
+          genreValue: string,
+          statusValue: string
+        ) => {
+          setLoading(true);
+          try {
+            const params = new URLSearchParams();
+            if (searchValue) params.set("search", searchValue);
+            if (genreValue) params.set("genre", genreValue);
+            if (statusValue) params.set("status", statusValue);
+            const res = await fetch(`/api/books?${params.toString()}`);
+            if (!res.ok) throw new Error("Erro ao buscar livros");
+            const data = await res.json();
+            setBooks(data);
+            toast.success("Biblioteca carregada com sucesso");
+          } catch (err) {
+            setBooks([]);
+            toast.error("Erro ao buscar livros, tente novamente mais tarde.");
+          } finally {
+            setLoading(false);
+          }
+        },
+        400
+      ),
+    []
+  );
+
+  useEffect(() => {
+    setLoading(true);
+    fetchBooks(search, genre, status);
+  }, [search, genre, status, fetchBooks]);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-4xl font-bold mb-2">Biblioteca</h1>
-          <p className="text-neutral-600 text-lg">
-            {filteredBooks.length} livros encontrados
-          </p>
         </div>
       </div>
-
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-2">
         <Input
           placeholder="Buscar por título ou autor..."
           className="flex-1"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-
-        <Select
-          value={filterGenre}
-          onValueChange={(value: string) => setFilterGenre(value)}
-        >
+        <Select value={genre} onValueChange={setGenre}>
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filtrar por gênero" />
           </SelectTrigger>
           <SelectContent>
-            {genres
-              .filter((g): g is string => !!g)
-              .map((genre) => (
-                <SelectItem key={genre} value={genre}>
-                  {genre}
-                </SelectItem>
-              ))}
+            {genres.map((g) => (
+              <SelectItem key={g} value={g}>
+                {g}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-        <Select
-          value={filterStatus}
-          onValueChange={(value: ReadingStatus | "") => setFilterStatus(value)}
-        >
+        <Select value={status} onValueChange={setStatus}>
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
@@ -135,16 +124,15 @@ export default function BibliotecaPage() {
           </SelectContent>
         </Select>
       </div>
-
-      {(searchTerm || filterGenre || filterStatus) && (
-        <div className="flex justify-end mb-8">
+      {(search || genre || status) && (
+        <div className="flex justify-end mb-4">
           <Button
             variant="outline"
             className="flex items-center gap-1 text-xs px-2 py-1 h-7"
             onClick={() => {
-              setSearchTerm("");
-              setFilterGenre("");
-              setFilterStatus("");
+              setSearch("");
+              setGenre("");
+              setStatus("");
             }}
           >
             Limpar filtros
@@ -152,14 +140,15 @@ export default function BibliotecaPage() {
           </Button>
         </div>
       )}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-        {filteredBooks.length === 0 ? (
+        {loading ? (
+          <BibliotecaSkeleton />
+        ) : books.length === 0 ? (
           <div className="col-span-full text-center text-neutral-500 py-12 text-lg">
             Nenhum livro encontrado com os filtros atuais.
           </div>
         ) : (
-          filteredBooks.map((book) => (
+          books.map((book) => (
             <BookCard key={book.id} book={book} showDetails showDeleteButton />
           ))
         )}
