@@ -130,13 +130,14 @@ export function BookCard({
             <Eye size={20} />
           </Link>
         </button>
-        <button
-          onClick={onEdit}
+        <Link
+          href={`/livro/${book.id}/editar`}
           aria-label="Editar livro"
           className="text-neutral-500 hover:text-black"
+          title="Editar livro"
         >
           <Pencil size={20} />
-        </button>
+        </Link>
         {onDelete && (
           <button
             onClick={onDelete}

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Star, Eye, Save, ArrowLeft } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -301,7 +301,7 @@ export default function AdicionarLivros() {
                   Total de Páginas
                 </label>
                 <Input
-                  placeholder="300"
+                  placeholder="0"
                   type="number"
                   value={pages}
                   onChange={(e) => setPages(e.target.value)}
@@ -312,7 +312,7 @@ export default function AdicionarLivros() {
                   Página Atual
                 </label>
                 <Input
-                  placeholder="150"
+                  placeholder="0"
                   type="number"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(e.target.value)}
