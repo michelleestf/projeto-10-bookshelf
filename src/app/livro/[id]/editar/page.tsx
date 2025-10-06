@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,

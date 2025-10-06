@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
