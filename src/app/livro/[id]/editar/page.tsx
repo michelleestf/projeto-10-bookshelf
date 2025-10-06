@@ -112,6 +112,11 @@ export default function EditarLivroPage() {
     }
     setUpdating(true);
     try {
+      let currentPageValue = currentPage ? Number(currentPage) : undefined;
+      const totalPagesValue = pages ? Number(pages) : undefined;
+      if (status === "LIDO" && totalPagesValue) {
+        currentPageValue = totalPagesValue;
+      }
       const updatedBook = {
         title: title.trim(),
         author: author.trim(),
@@ -119,8 +124,8 @@ export default function EditarLivroPage() {
         year: year ? Number(year) : undefined,
         isbn: isbn || undefined,
         status: status || undefined,
-        pages: pages ? Number(pages) : undefined,
-        currentPage: currentPage ? Number(currentPage) : undefined,
+        pages: totalPagesValue,
+        currentPage: currentPageValue,
         rating: rating || undefined,
         synopsis: synopsis || undefined,
         notes: notes || undefined,
