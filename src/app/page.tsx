@@ -1,6 +1,8 @@
 "use client";
+import React from "react";
 import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
+import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 import Link from "next/link";
 
 import {
@@ -14,8 +16,6 @@ import {
   Search,
 } from "lucide-react";
 
-import React from "react";
-
 export default function Dashboard() {
   const [books, setBooks] = React.useState([]);
   const [stats, setStats] = React.useState({
@@ -24,9 +24,11 @@ export default function Dashboard() {
     finalizados: 0,
     paginas: 0,
   });
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     async function fetchBooks() {
+      setLoading(true);
       try {
         const res = await fetch("/api/books");
         const data = await res.json();
@@ -44,6 +46,7 @@ export default function Dashboard() {
         setBooks([]);
         setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
       }
+      setLoading(false);
     }
     fetchBooks();
   }, []);
@@ -101,12 +104,14 @@ export default function Dashboard() {
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Livros Recentes</h2>
             <div className="flex flex-col gap-3">
-              {books
-                .slice(-3)
-                .reverse()
-                .map((book: any) => (
-                  <BookCard key={book.id} book={book} />
-                ))}
+              {loading
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <BookCardSkeleton key={i} />
+                  ))
+                : books
+                    .slice(-3)
+                    .reverse()
+                    .map((book: any) => <BookCard key={book.id} book={book} />)}
             </div>
           </Card>
         </section>

@@ -1,5 +1,4 @@
 "use client";
-import BibliotecaSkeleton from "@/components/ui/BibliotecaSkeleton";
 import { useEffect, useState, useMemo } from "react";
 import { Book, ReadingStatus } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
@@ -15,6 +14,7 @@ import {
 import { Input } from "@/components/ui/Input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 
 function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
   let timer: ReturnType<typeof setTimeout>;
@@ -142,7 +142,7 @@ export default function BibliotecaPage() {
       )}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
         {loading ? (
-          <BibliotecaSkeleton />
+          Array.from({ length: 3 }).map((_, i) => <BookCardSkeleton key={i} />)
         ) : books.length === 0 ? (
           <div className="col-span-full text-center text-neutral-500 py-12 text-lg">
             Nenhum livro encontrado com os filtros atuais.
