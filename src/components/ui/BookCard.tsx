@@ -14,6 +14,7 @@ interface BookCardProps {
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onDeleted?: () => void;
   showDetails?: boolean;
   showDeleteButton?: boolean;
 }
@@ -30,6 +31,7 @@ export function BookCard({
   onView,
   onEdit,
   onDelete,
+  onDeleted,
   showDetails,
   showDeleteButton,
 }: BookCardProps) {
@@ -145,6 +147,7 @@ export function BookCard({
               bookTitle={book.title}
               bookId={book.id}
               onCancel={() => setShowDelete(false)}
+              onDeleted={onDeleted}
             />
           </>
         )}
