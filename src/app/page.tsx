@@ -48,57 +48,57 @@ export default function Dashboard() {
   }, []);
   return (
     <main className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-      <p className="text-neutral-600 mb-8 text-lg">
+      <h1 className="text-3xl font-bold mb-2 dark:text-gray-100">Dashboard</h1>
+      <p className="text-neutral-600 mb-8 text-lg dark:text-gray-400">
         Bem-vindo à sua biblioteca pessoal. Aqui você pode acompanhar seu
         progresso de leitura.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
+        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-base font-semibold text-neutral-800">
+            <span className="text-base font-semibold text-neutral-800 dark:text-gray-100">
               Total de Livros
             </span>
-            <BookOpen size={20} className="text-neutral-400" />
+            <BookOpen size={20} className="text-neutral-400 dark:text-gray-400" />
           </div>
-          <div className="text-3xl font-bold">{stats.total}</div>
-          <div className="text-xs text-neutral-400">Em sua biblioteca</div>
+          <div className="text-3xl font-bold dark:text-gray-100">{stats.total}</div>
+          <div className="text-xs text-neutral-400 dark:text-gray-400">Em sua biblioteca</div>
         </Card>
-        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
+        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-base font-semibold text-neutral-800">
+            <span className="text-base font-semibold text-neutral-800 dark:text-gray-100">
               Lendo Atualmente
             </span>
-            <Users size={20} className="text-neutral-400" />
+            <Users size={20} className="text-neutral-400 dark:text-gray-400" />
           </div>
-          <div className="text-3xl font-bold">{stats.lendo}</div>
-          <div className="text-xs text-neutral-400">Livros em progresso</div>
+          <div className="text-3xl font-bold dark:text-gray-100">{stats.lendo}</div>
+          <div className="text-xs text-neutral-400 dark:text-gray-400">Livros em progresso</div>
         </Card>
-        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
+        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-base font-semibold text-neutral-800">
+            <span className="text-base font-semibold text-neutral-800 dark:text-gray-100">
               Livros Finalizados
             </span>
-            <CheckCircle size={20} className="text-neutral-400" />
+            <CheckCircle size={20} className="text-neutral-400 dark:text-gray-400" />
           </div>
-          <div className="text-3xl font-bold">{stats.finalizados}</div>
-          <div className="text-xs text-neutral-400">Leituras concluídas</div>
+          <div className="text-3xl font-bold dark:text-gray-100">{stats.finalizados}</div>
+          <div className="text-xs text-neutral-400 dark:text-gray-400">Leituras concluídas</div>
         </Card>
-        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
+        <Card className="flex flex-col gap-2 justify-between border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-base font-semibold text-neutral-800">
+            <span className="text-base font-semibold text-neutral-800 dark:text-gray-100">
               Páginas Lidas
             </span>
-            <FileText size={20} className="text-neutral-400" />
+            <FileText size={20} className="text-neutral-400 dark:text-gray-400" />
           </div>
-          <div className="text-3xl font-bold">{stats.paginas}</div>
-          <div className="text-xs text-neutral-400">Total acumulado</div>
+          <div className="text-3xl font-bold dark:text-gray-100">{stats.paginas}</div>
+          <div className="text-xs text-neutral-400 dark:text-gray-400">Total acumulado</div>
         </Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
-          <Card className="border border-neutral-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Livros Recentes</h2>
+          <Card className="border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900 p-6">
+            <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Livros Recentes</h2>
             <div className="flex flex-col gap-3">
               {loading
                 ? Array.from({ length: 3 }).map((_, i) => (
@@ -111,33 +111,33 @@ export default function Dashboard() {
           </Card>
         </section>
         <aside>
-          <Card className="border border-neutral-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Ações Rápidas</h2>
+          <Card className="border border-neutral-200 dark:border-gray-700 shadow-sm dark:bg-gray-900 p-6">
+            <h2 className="text-lg font-semibold mb-4 dark:text-gray-100">Ações Rápidas</h2>
             <div className="grid grid-cols-2 gap-4">
               <Link
                 href="/adicionar-livros"
-                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 dark:bg-gray-900 dark:border-gray-700 hover:bg-neutral-100 dark:hover:bg-gray-800 text-black dark:text-gray-100 rounded-md py-4 font-medium transition"
               >
                 <Plus size={22} />
                 Adicionar Livro
               </Link>
               <Link
                 href="/biblioteca"
-                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 dark:bg-gray-900 dark:border-gray-700 hover:bg-neutral-100 dark:hover:bg-gray-800 text-black dark:text-gray-100 rounded-md py-4 font-medium transition"
               >
                 <Library size={22} />
                 Ver Biblioteca
               </Link>
               <Link
                 href="/biblioteca?status=LENDO"
-                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 dark:bg-gray-900 dark:border-gray-700 hover:bg-neutral-100 dark:hover:bg-gray-800 text-black dark:text-gray-100 rounded-md py-4 font-medium transition"
               >
                 <Book size={22} />
                 Lendo Agora
               </Link>
               <Link
                 href="/biblioteca"
-                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
+                className="flex flex-col items-center gap-1 bg-white border border-neutral-200 dark:bg-gray-900 dark:border-gray-700 hover:bg-neutral-100 dark:hover:bg-gray-800 text-black dark:text-gray-100 rounded-md py-4 font-medium transition"
               >
                 <Search size={22} />
                 Buscar Livros
