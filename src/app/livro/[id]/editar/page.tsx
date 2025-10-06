@@ -17,7 +17,7 @@ import { Card } from "@/components/ui/Card";
 import type { ReadingStatus, Genre, Book } from "@/lib/books";
 import { genres } from "@/lib/books";
 import { toast } from "react-toastify";
-import { ArrowLeft, Save, Star } from "lucide-react";
+import { ArrowLeft, Save, Star, Loader2 } from "lucide-react";
 import NotFound from "@/components/ui/NotFound";
 import { EditarLivroSkeleton } from "@/components/ui/EditarLivroSkeleton";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +28,7 @@ export default function EditarLivroPage() {
   const { id } = params;
 
   const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
   const [book, setBook] = useState<Book | null>(null);
 
   const [title, setTitle] = useState("");
@@ -109,6 +110,7 @@ export default function EditarLivroPage() {
       toast.error("Preencha todos os campos obrigatórios!");
       return;
     }
+    setUpdating(true);
     try {
       const updatedBook = {
         title: title.trim(),
@@ -144,6 +146,8 @@ export default function EditarLivroPage() {
       }
     } catch {
       toast.error("Erro ao atualizar livro!");
+    } finally {
+      setUpdating(false);
     }
   }
 
@@ -537,10 +541,14 @@ export default function EditarLivroPage() {
                 <div className="flex flex-col gap-2">
                   <Button
                     className="w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    disabled={!isValid || !isChanged}
+                    disabled={updating || !isValid || !isChanged}
                     type="submit"
                   >
-                    <Save className="h-5 w-5" />
+                    {updating ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Save className="h-5 w-5" />
+                    )}
                     Salvar Alterações
                   </Button>
                   <Button
