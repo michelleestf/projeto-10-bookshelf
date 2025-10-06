@@ -245,6 +245,9 @@ export default function BookPage({
               bookTitle={book.title}
               bookId={book.id}
               onCancel={() => setShowDelete(false)}
+              onDeleted={() => {
+                router.push("/biblioteca");
+              }}
             />
           </div>
         </div>

@@ -8,19 +8,11 @@
     "addedAt": "2025-10-06T00:21:48.808Z"
   },
   {
-    "id": "5aa3cd9e-69cf-44e0-ac5c-c40788fbbd4a",
-    "title": "Guerra dos Tronos",
+    "id": "0062748f-f11c-4a5e-a680-33f786ab4420",
+    "title": "Guerra dos tronos",
     "author": "George",
     "genre": "Fantasia",
-    "status": "LIDO",
-    "addedAt": "2025-10-06T00:24:55.656Z"
-  },
-  {
-    "id": "febacd3c-7848-4f41-80a4-b9b445b426ab",
-    "title": "Guerra dos Tronos",
-    "author": "George",
-    "genre": "Fantasia",
-    "status": "LIDO",
-    "addedAt": "2025-10-06T00:28:07.166Z"
+    "status": "QUERO_LER",
+    "addedAt": "2025-10-06T02:00:16.628Z"
   }
 ]
