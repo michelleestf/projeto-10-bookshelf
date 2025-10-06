@@ -199,7 +199,7 @@ export default function BookPage({
             <>
               <hr className="my-4" />
               <h3 className="text-lg font-semibold mb-1">Sinopse</h3>
-              <p className="text-neutral-700 leading-relaxed mb-6 whitespace-pre-line">
+              <p className="text-neutral-700 leading-relaxed whitespace-pre-line">
                 {book.synopsis}
               </p>
             </>
@@ -210,7 +210,7 @@ export default function BookPage({
             <>
               <hr className="my-4" />
               <h3 className="text-lg font-semibold mb-1">Notas Pessoais</h3>
-              <p className="text-neutral-700 leading-relaxed mb-6 whitespace-pre-line">
+              <p className="text-neutral-700 leading-relaxed whitespace-pre-line">
                 {book.notes}
               </p>
             </>

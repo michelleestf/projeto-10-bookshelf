@@ -135,9 +135,7 @@ export default function EditarLivroPage() {
         const data = await res.json();
         toast.success("Livro atualizado com sucesso!");
         setBook(data);
-        setTimeout(() => {
-          router.push(`/livro/${id}`);
-        }, 500);
+        router.push(`/livro/${id}`);
       } else if (res.status === 404) {
         toast.error("Livro não encontrado para edição!");
       } else {
