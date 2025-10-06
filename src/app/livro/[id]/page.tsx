@@ -1,9 +1,9 @@
 "use client";
 
-import { use } from "react";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
-import { initialBooks, Book } from "@/lib/books";
+import type { Book } from "@/lib/books";
+import { formatDateToBR } from "@/lib/utils";
 import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/button";
@@ -36,25 +36,50 @@ export default function BookPage({
   const { id: rawId } = use(params);
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
 
-  const [books, setBooks] = useState<Book[]>(initialBooks);
+  const [book, setBook] = useState<Book | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showDelete, setShowDelete] = useState(false);
   const router = useRouter();
 
-  const book = books.find((b) => b.id === id);
-  if (!book)
+  useEffect(() => {
+    async function fetchBook() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/books/${id}`);
+        if (!res.ok) {
+          setBook(null);
+        } else {
+          const data = await res.json();
+          setBook(data);
+        }
+      } catch {
+        setBook(null);
+      }
+      setLoading(false);
+    }
+    if (id) fetchBook();
+  }, [id]);
+
+  const handleDeleteClick = () => setShowDelete(true);
+  const handleEdit = () => {
+    if (book) router.push(`/livro/${book.id}/editar`);
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto py-10 px-4 text-center text-lg">
+        Carregando livro...
+      </div>
+    );
+  }
+  if (!book) {
     return (
       <NotFound message="O livro que você está tentando acessar não existe ou foi removido." />
     );
+  }
 
-  const [showDelete, setShowDelete] = useState(false);
-  const handleDeleteClick = () => setShowDelete(true);
-
-  const handleEdit = () => {
-    router.push(`/livro/${book.id}/editar`);
-  };
-
-  // Datas fictícias substituídas por campos reais se existirem
-  const addedAt = book.addedAt || "31/01/2024";
-  const updatedAt = book.updatedAt || "09/03/2024";
+  const addedAt = book.addedAt || "";
+  const updatedAt = book.updatedAt || "";
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
       <div className="flex items-center gap-2 mb-6">
@@ -116,23 +141,25 @@ export default function BookPage({
           <p className="text-neutral-600 text-lg mb-4">por {book.author}</p>
 
           {/* Avaliação */}
-          <div className="flex items-center gap-1 mb-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span
-                key={i}
-                className={
-                  i < (book.rating || 0)
-                    ? "text-yellow-400 text-xl"
-                    : "text-neutral-300 text-xl"
-                }
-              >
-                ★
+          {typeof book.rating === "number" && book.rating > 0 && (
+            <div className="flex items-center gap-1 mb-4">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <span
+                  key={i}
+                  className={
+                    i < (book.rating ?? 0)
+                      ? "text-yellow-400 text-xl"
+                      : "text-neutral-300 text-xl"
+                  }
+                >
+                  ★
+                </span>
+              ))}
+              <span className="ml-2 text-neutral-600 text-base font-medium">
+                ({book.rating}/5)
               </span>
-            ))}
-            <span className="ml-2 text-neutral-600 text-base font-medium">
-              ({book.rating || 0}/5)
-            </span>
-          </div>
+            </div>
+          )}
 
           {/* Grid de informações principais com ícones */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4">
@@ -183,11 +210,10 @@ export default function BookPage({
             </div>
           )}
 
-          <hr className="my-4" />
-
           {/* Sinopse */}
           {book.synopsis && (
             <>
+              <hr className="my-4" />
               <h3 className="text-lg font-semibold mb-1">Sinopse</h3>
               <p className="text-neutral-700 leading-relaxed mb-6 whitespace-pre-line">
                 {book.synopsis}
@@ -208,9 +234,11 @@ export default function BookPage({
 
           <hr className="my-4" />
           <div className="flex flex-wrap justify-between text-xs text-neutral-500">
-            {book.addedAt && <span>Adicionado em: {book.addedAt}</span>}
+            {book.addedAt && (
+              <span>Adicionado em: {formatDateToBR(book.addedAt)}</span>
+            )}
             {book.updatedAt && (
-              <span>Última atualização: {book.updatedAt}</span>
+              <span>Última atualização: {formatDateToBR(book.updatedAt)}</span>
             )}
           </div>
         </div>

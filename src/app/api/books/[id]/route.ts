@@ -1,14 +1,23 @@
 import { NextResponse } from "next/server";
 import { initialBooks, Book } from "@/lib/books";
+import { promises as fs } from "fs";
+import path from "path";
 
-declare global {
-  var booksArray: Book[] | undefined;
+const DATA_PATH = path.join(process.cwd(), "src/lib/books-data.json");
+
+async function readBooks(): Promise<Book[]> {
+  try {
+    const data = await fs.readFile(DATA_PATH, "utf-8");
+    const books = JSON.parse(data);
+    if (Array.isArray(books)) return books;
+    return [];
+  } catch {
+    return [];
+  }
 }
-let books: Book[] =
-  globalThis.booksArray || (globalThis.booksArray = [...initialBooks]);
 
-function findBookIndex(id: string) {
-  return books.findIndex((b) => b.id === id);
+async function writeBooks(books: Book[]) {
+  await fs.writeFile(DATA_PATH, JSON.stringify(books, null, 2), "utf-8");
 }
 
 export async function GET(
@@ -16,14 +25,20 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const idx = findBookIndex(params.id);
-    if (idx === -1) {
+    const books = await readBooks();
+    console.log("Buscando livro com id:", params.id);
+    const book = books.find((b) => b.id === params.id);
+    if (!book) {
+      console.log(
+        "IDs disponíveis:",
+        books.map((b) => b.id)
+      );
       return NextResponse.json(
         { error: "Livro não encontrado." },
         { status: 404 }
       );
     }
-    return NextResponse.json(books[idx], { status: 200 });
+    return NextResponse.json(book, { status: 200 });
   } catch {
     return NextResponse.json(
       { error: "Erro ao buscar livro." },
@@ -37,7 +52,8 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const idx = findBookIndex(params.id);
+    const books = await readBooks();
+    const idx = books.findIndex((b) => b.id === params.id);
     if (idx === -1) {
       return NextResponse.json(
         { error: "Livro não encontrado." },
@@ -76,6 +92,7 @@ export async function PUT(
     if (year !== undefined) book.year = year;
 
     books[idx] = book;
+    await writeBooks(books);
     return NextResponse.json(book, { status: 200 });
   } catch {
     return NextResponse.json(
@@ -90,7 +107,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const idx = findBookIndex(params.id);
+    const books = await readBooks();
+    const idx = books.findIndex((b) => b.id === params.id);
     if (idx === -1) {
       return NextResponse.json(
         { error: "Livro não encontrado." },
@@ -98,6 +116,7 @@ export async function DELETE(
       );
     }
     books.splice(idx, 1);
+    await writeBooks(books);
     return new NextResponse(null, { status: 204 });
   } catch {
     return NextResponse.json(
