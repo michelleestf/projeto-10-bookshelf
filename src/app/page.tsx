@@ -1,6 +1,8 @@
-import { initialBooks } from "@/lib/books";
+"use client";
+import React from "react";
 import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
+import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 import Link from "next/link";
 
 import {
@@ -13,25 +15,45 @@ import {
   Book,
   Search,
 } from "lucide-react";
-
-function getStats() {
-  const total = initialBooks.length;
-  const lendo = initialBooks.filter((b) => b.status === "LENDO").length;
-  const finalizados = initialBooks.filter((b) => b.status === "LIDO").length;
-  const paginas = initialBooks.reduce((acc, b) => acc + (b.pages || 0), 0);
-  return { total, lendo, finalizados, paginas };
-}
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
-  const stats = getStats();
+  const [books, setBooks] = React.useState([]);
+  const [stats, setStats] = React.useState({
+    total: 0,
+    lendo: 0,
+    finalizados: 0,
+    paginas: 0,
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchDashboard() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/books/dashboard");
+        const data = await res.json();
+        setBooks(data.recentes || []);
+        setStats(
+          data.stats || { total: 0, lendo: 0, finalizados: 0, paginas: 0 }
+        );
+      } catch (e) {
+        setBooks([]);
+        setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
+        toast.error("Erro ao carregar o dashboard.");
+      }
+      setLoading(false);
+    }
+    fetchDashboard();
+  }, []);
   return (
     <main className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-4xl font-bold mb-2">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
       <p className="text-neutral-600 mb-8 text-lg">
         Bem-vindo à sua biblioteca pessoal. Aqui você pode acompanhar seu
         progresso de leitura.
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <Card className="flex flex-col gap-2 justify-between border border-neutral-200 shadow-sm">
           <div className="flex items-center justify-between mb-1">
             <span className="text-base font-semibold text-neutral-800">
@@ -73,14 +95,18 @@ export default function Dashboard() {
           <div className="text-xs text-neutral-400">Total acumulado</div>
         </Card>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Livros Recentes</h2>
             <div className="flex flex-col gap-3">
-              {initialBooks.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
+              {loading
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <BookCardSkeleton key={i} />
+                  ))
+                : books.map((book: any) => (
+                    <BookCard key={book.id} book={book} />
+                  ))}
             </div>
           </Card>
         </section>

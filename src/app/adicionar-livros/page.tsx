@@ -2,249 +2,428 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
-import { Progress } from "@/components/ui/progress";
 import {
   Select,
+  SelectTrigger,
   SelectContent,
   SelectItem,
-  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { Card } from "@/components/ui/Card";
+import type { ReadingStatus, Genre, Book } from "@/lib/books";
+import { genres } from "@/lib/books";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-type Livro = {
-  id: string;
-  titulo: string;
-  autor: string;
-  totalPaginas?: number;
-  paginaAtual?: number;
-  statusLeitura?: "não iniciado" | "lendo" | "concluído";
-  isbn?: string;
-  urlCapa?: string;
-  genero?: string;
-  avaliacao?: number;
-  notasPessoais?: string;
-};
-
-export default function AddBookPage() {
+export default function AdicionarLivros() {
   const router = useRouter();
-
-  const [titulo, setTitulo] = useState("");
-  const [autor, setAutor] = useState("");
-  const [totalPaginas, setTotalPaginas] = useState<number | "">("");
-  const [paginaAtual, setPaginaAtual] = useState<number | "">("");
-  const [statusLeitura, setStatusLeitura] = useState<
-    "não iniciado" | "lendo" | "concluído"
-  >("não iniciado");
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [genre, setGenre] = useState<Genre | "">("");
+  const [year, setYear] = useState("");
   const [isbn, setIsbn] = useState("");
-  const [urlCapa, setUrlCapa] = useState("");
-  const [genero, setGenero] = useState("");
-  const [avaliacao, setAvaliacao] = useState<number>(0);
-  const [notasPessoais, setNotasPessoais] = useState("");
+  const [status, setStatus] = useState<ReadingStatus | "">("");
+  const [pages, setPages] = useState("");
+  const [currentPage, setCurrentPage] = useState("");
+  const [rating, setRating] = useState(0);
+  const [synopsis, setSynopsis] = useState("");
+  const [notes, setNotes] = useState("");
+  const [cover, setCover] = useState("");
+  const [coverValid, setCoverValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [errors, setErrors] = useState<{
-    titulo?: string;
-    autor?: string;
-    urlCapa?: string;
-  }>({});
-  const [urlCapaValida, setUrlCapaValida] = useState(false);
+  const isValid = Boolean(title.trim() && author.trim() && genre && status);
 
-  // validação da URL da capa
-  useEffect(() => {
-    if (!urlCapa) {
-      setUrlCapaValida(false);
+  async function handleAddBook(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isValid) {
+      toast.error("Preencha todos os campos obrigatórios!");
       return;
     }
+    setLoading(true);
     try {
-      new URL(urlCapa);
-      setUrlCapaValida(true);
-    } catch {
-      setUrlCapaValida(false);
+      const newBook: Record<string, any> = {};
+      if (title.trim()) newBook.title = title.trim();
+      if (author.trim()) newBook.author = author.trim();
+      if (genre) newBook.genre = genre;
+      if (year) newBook.year = Number(year);
+      if (isbn) newBook.isbn = isbn;
+      if (status) newBook.status = status;
+      if (pages) newBook.pages = Number(pages);
+      if (currentPage) newBook.currentPage = Number(currentPage);
+      if (rating) newBook.rating = rating;
+      if (synopsis) newBook.synopsis = synopsis;
+      if (notes) newBook.notes = notes;
+      if (cover) newBook.cover = cover;
+      const response = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBook),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Erro ao adicionar livro!");
+        setLoading(false);
+        return;
+      }
+      const createdBook = await response.json();
+      toast.success("Livro adicionado com sucesso!");
+      router.push(`/livro/${createdBook.id}`);
+    } catch (err) {
+      toast.error("Erro ao adicionar livro!");
+      setLoading(false);
     }
-  }, [urlCapa]);
+  }
 
-  // progresso de preenchimento
-  const progresso = () => {
-    let totalCampos = 2;
-    let preenchidos = 0;
-    if (titulo.trim()) preenchidos++;
-    if (autor.trim()) preenchidos++;
+  const StarRating = ({
+    value,
+    onChange,
+  }: {
+    value: number;
+    onChange: (v: number) => void;
+  }) => (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((star) => {
+        const isFilled = star <= value;
+        return (
+          <button
+            type="button"
+            key={star}
+            aria-label={`Avaliar com ${star} estrela${star > 1 ? "s" : ""}`}
+            onClick={() => onChange(star === value ? 0 : star)}
+            className="focus:outline-none cursor-pointer"
+          >
+            <Star
+              size={28}
+              stroke={isFilled ? "#facc15" : "#a3a3a3"}
+              strokeWidth={isFilled ? 2 : 1}
+              fill={isFilled ? "#facc15" : "none"}
+              className="transition-colors"
+            />
+          </button>
+        );
+      })}
+    </div>
+  );
 
-    totalCampos += 6;
-    if (totalPaginas !== "") preenchidos++;
-    if (paginaAtual !== "") preenchidos++;
-    if (urlCapa.trim()) preenchidos++;
-    if (genero.trim()) preenchidos++;
-    if (avaliacao > 0) preenchidos++;
-    if (notasPessoais.trim()) preenchidos++;
+  const campos = [
+    title,
+    author,
+    genre,
+    year,
+    isbn,
+    status,
+    pages,
+    currentPage,
+    rating,
+    synopsis,
+    notes,
+    cover,
+  ];
+  const totalCampos = campos.length;
+  const preenchidos = campos.filter((c) => {
+    if (typeof c === "string") return c.trim() !== "";
+    if (typeof c === "number") return c !== 0;
+    return !!c;
+  }).length;
+  const progresso = Math.round((preenchidos / totalCampos) * 100);
 
-    return Math.round((preenchidos / totalCampos) * 100);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: typeof errors = {};
-    if (!titulo.trim()) newErrors.titulo = "Título é obrigatório";
-    if (!autor.trim()) newErrors.autor = "Autor é obrigatório";
-    if (urlCapa && !urlCapaValida) newErrors.urlCapa = "URL da capa inválida";
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length > 0) return;
-
-    const livro: Livro = {
-      id: crypto.randomUUID(),
-      titulo: titulo.trim(),
-      autor: autor.trim(),
-      totalPaginas: totalPaginas === "" ? undefined : Number(totalPaginas),
-      paginaAtual: paginaAtual === "" ? undefined : Number(paginaAtual),
-      statusLeitura,
-      isbn: isbn.trim() || undefined,
-      urlCapa: urlCapa.trim() || undefined,
-      genero: genero.trim() || undefined,
-      avaliacao: avaliacao > 0 ? avaliacao : undefined,
-      notasPessoais: notasPessoais.trim() || undefined,
-    };
-
-    try {
-      console.log("Livro salvo:", livro);
-      toast.success("Livro adicionado com sucesso 🚀");
-      router.push("/books");
-    } catch {
-      toast.error("Não foi possível adicionar o livro");
+  useEffect(() => {
+    if (cover && cover.match(/^https?:\/\//i)) {
+      setCoverValid(true);
+    } else {
+      setCoverValid(false);
     }
-  };
+  }, [cover]);
+
+  const statusOptions: { value: ReadingStatus; label: string; desc: string }[] =
+    [
+      {
+        value: "QUERO_LER",
+        label: "Quero Ler",
+        desc: "Livro na lista de desejos",
+      },
+      { value: "LENDO", label: "Lendo", desc: "Livro em progresso" },
+      { value: "LIDO", label: "Lido", desc: "Livro finalizado" },
+      {
+        value: "PAUSADO",
+        label: "Pausado",
+        desc: "Leitura temporariamente interrompida",
+      },
+      { value: "ABANDONADO", label: "Abandonado", desc: "Leitura abandonada" },
+    ];
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-10">
-      <div>
-        <h1 className="text-4xl font-bold mb-2">Adicionar Livro</h1>
-        <p className="text-neutral-600 mb-8 text-lg">
-          Preencha os campos abaixo para cadastrar um novo livro
-        </p>
-      </div>
-
-      {/* Formulário */}
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-sm rounded-xl p-6 space-y-4"
-      >
-        <div>
-          <Input
-            placeholder="Título *"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-          />
-          {errors.titulo && (
-            <p className="text-red-500 text-sm">{errors.titulo}</p>
-          )}
-        </div>
-
-        <div>
-          <Input
-            placeholder="Autor *"
-            value={autor}
-            onChange={(e) => setAutor(e.target.value)}
-          />
-          {errors.autor && (
-            <p className="text-red-500 text-sm">{errors.autor}</p>
-          )}
-        </div>
-
-        <Input
-          placeholder="Total de páginas"
-          type="number"
-          value={totalPaginas}
-          onChange={(e) =>
-            setTotalPaginas(e.target.value ? Number(e.target.value) : "")
-          }
-        />
-
-        <Input
-          placeholder="Página atual"
-          type="number"
-          value={paginaAtual}
-          onChange={(e) =>
-            setPaginaAtual(e.target.value ? Number(e.target.value) : "")
-          }
-        />
-
-        <Select
-          value={statusLeitura}
-          onValueChange={(v) =>
-            setStatusLeitura(v as "não iniciado" | "lendo" | "concluído")
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Status de leitura" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="não iniciado">Não iniciado</SelectItem>
-            <SelectItem value="lendo">Lendo</SelectItem>
-            <SelectItem value="concluído">Concluído</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Input
-          placeholder="ISBN"
-          value={isbn}
-          onChange={(e) => setIsbn(e.target.value)}
-        />
-
-        <div>
-          <Input
-            placeholder="URL da capa"
-            value={urlCapa}
-            onChange={(e) => setUrlCapa(e.target.value)}
-          />
-          {errors.urlCapa && (
-            <p className="text-red-500 text-sm">{errors.urlCapa}</p>
-          )}
-        </div>
-
-        {urlCapaValida && (
-          <div className="w-32 h-auto border rounded overflow-hidden">
-            <Image
-              src={urlCapa}
-              alt="Preview da Capa"
-              width={128}
-              height={192}
-              className="object-cover w-full h-auto"
-            />
+    <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <div className="order-2 sm:order-1">
+            <h1 className="text-3xl font-bold mb-2">Adicionar Novo Livro</h1>
+            <p className="text-neutral-600 text-lg">
+              Preencha as informações do livro que deseja adicionar à sua
+              biblioteca.
+            </p>
           </div>
-        )}
+          <div className="order-1 sm:order-2 flex justify-end">
+            <Button
+              variant="outline"
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeft size={16} /> Voltar
+            </Button>
+          </div>
+        </div>
+      </div>
+      {/* Progresso do Preenchimento */}
+      <Card className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">
+          Progresso do Preenchimento
+        </h2>
+        <p className="text-xs text-gray-500 mb-2">
+          Os campos marcados com <span className="text-red-500">*</span> são
+          obrigatórios.
+        </p>
+        <div className="flex items-center gap-4">
+          <Progress value={progresso} className="h-2.5 w-full" />
+          <span className="text-sm font-medium text-gray-700">
+            {progresso}%
+          </span>
+        </div>
+        <span className="text-sm text-gray-500">Campos preenchidos</span>
+      </Card>
 
-        <Input
-          placeholder="Gênero"
-          value={genero}
-          onChange={(e) => setGenero(e.target.value)}
-        />
+      {/* Grid principal */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Coluna principal */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          {/* Informações Básicas */}
+          <Card>
+            <h3 className="text-md font-semibold mb-4">Informações Básicas</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">
+                  Título <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder="Digite o título do livro"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Autor <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder="Digite o nome do autor"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Gênero <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  value={genre}
+                  onValueChange={(v) => setGenre(v as Genre)}
+                >
+                  <SelectTrigger className="w-full cursor-pointer">
+                    <SelectValue placeholder="Selecione o gênero" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {genres.map((g) => (
+                      <SelectItem key={g} value={g}>
+                        {g}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Ano de Publicação
+                </label>
+                <Input
+                  placeholder="2024"
+                  type="number"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">ISBN</label>
+                <Input
+                  placeholder="978-85-123-4567-8"
+                  value={isbn}
+                  onChange={(e) => setIsbn(e.target.value)}
+                />
+              </div>
+            </div>
+          </Card>
 
-        <Input
-          placeholder="Avaliação (0 a 5)"
-          type="number"
-          min="0"
-          max="5"
-          value={avaliacao}
-          onChange={(e) => setAvaliacao(Number(e.target.value))}
-        />
+          {/* Informações de Leitura */}
+          <Card>
+            <h3 className="text-md font-semibold mb-4">
+              Informações de Leitura
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium">
+                  Status de Leitura <span className="text-red-500">*</span>
+                </label>
+                <Select
+                  value={status}
+                  onValueChange={(v) => setStatus(v as ReadingStatus)}
+                >
+                  <SelectTrigger className="w-full cursor-pointer">
+                    <SelectValue placeholder="Selecione" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {status && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {statusOptions.find((opt) => opt.value === status)?.desc}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Total de Páginas
+                </label>
+                <Input
+                  placeholder="0"
+                  type="number"
+                  value={pages}
+                  onChange={(e) => setPages(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Página Atual
+                </label>
+                <Input
+                  placeholder="0"
+                  type="number"
+                  value={currentPage}
+                  onChange={(e) => setCurrentPage(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Avaliação (1-5 estrelas)
+                </label>
+                <StarRating value={rating} onChange={setRating} />
+                {rating === 0 && (
+                  <span className="text-xs text-gray-400">Sem avaliação</span>
+                )}
+              </div>
+            </div>
+          </Card>
 
-        <Textarea
-          placeholder="Notas pessoais"
-          value={notasPessoais}
-          onChange={(e) => setNotasPessoais(e.target.value)}
-        />
+          {/* Informações Adicionais */}
+          <Card>
+            <h3 className="text-md font-semibold mb-4">
+              Informações Adicionais
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">Sinopse</label>
+                <Textarea
+                  rows={3}
+                  placeholder="Descrição breve do enredo do livro..."
+                  value={synopsis}
+                  onChange={(e) => setSynopsis(e.target.value)}
+                  className="resize-none overflow-auto h-24"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Notas Pessoais
+                </label>
+                <Textarea
+                  rows={3}
+                  placeholder="Suas impressões, comentários ou lembretes sobre o livro..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="resize-none overflow-auto h-24"
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
 
-        <Progress value={progresso()} className="h-2" />
-
-        <Button type="submit" className="w-full">
-          Adicionar Livro
-        </Button>
-      </form>
-    </main>
+        {/* Coluna lateral */}
+        <div className="flex flex-col gap-6">
+          {/* Capa do Livro */}
+          <Card className="flex flex-col gap-4">
+            <h3 className="text-md font-semibold mb-4">Capa do Livro</h3>
+            <div>
+              <label className="block text-sm font-medium">URL da Capa</label>
+              <Input
+                placeholder="https://exemplo.com/capa.jpg"
+                value={cover}
+                onChange={(e) => setCover(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Preview da Capa
+              </label>
+              <div className="w-full">
+                {coverValid ? (
+                  <img
+                    src={cover}
+                    alt="Preview da Capa"
+                    className="w-full object-cover rounded"
+                  />
+                ) : (
+                  <span className="text-gray-400 flex flex-col items-center h-48 w-full justify-center">
+                    <Eye className="h-8 w-8 mb-1" />
+                    Preview da capa aparecerá aqui
+                  </span>
+                )}
+              </div>
+            </div>
+          </Card>
+          {/* Botões */}
+          <div className="flex flex-col gap-2">
+            <Button
+              className="w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+              disabled={!isValid || loading}
+              onClick={handleAddBook}
+              type="button"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Adicionando...
+                </>
+              ) : (
+                <>
+                  <Save className="h-5 w-5" />
+                  Adicionar Livro
+                </>
+              )}
+            </Button>
+            <Button variant="outline" className="w-full cursor-pointer">
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

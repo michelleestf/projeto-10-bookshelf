@@ -5,16 +5,19 @@ import { Book } from "@/lib/books";
 import Image from "next/image";
 import { Badge } from "./Badge";
 import { Eye, Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
+import { ConfirmDeleteModal } from "@/components/ui/ConfirmDeleteModal";
+import { Progress } from "@/components/ui/progress";
 
 interface BookCardProps {
   book: Book;
   onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onDeleted?: () => void;
   showDetails?: boolean;
+  showDeleteButton?: boolean;
 }
-
 const statusMap = {
   QUERO_LER: { label: "Quero Ler", color: "info" },
   LENDO: { label: "Lendo", color: "success" },
@@ -28,8 +31,11 @@ export function BookCard({
   onView,
   onEdit,
   onDelete,
+  onDeleted,
   showDetails,
+  showDeleteButton,
 }: BookCardProps) {
+  const [showDelete, setShowDelete] = useState(false);
   const progresso =
     book.status === "LENDO" && book.pages && book.currentPage
       ? Math.round((book.currentPage / book.pages) * 100)
@@ -76,19 +82,23 @@ export function BookCard({
             <span className="text-neutral-500 text-sm ml-1">{book.year}</span>
           )}
         </div>
-        <div className="flex gap-1 mt-1">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <span
-              key={i}
-              className={cn(
-                i < (book.rating || 0) ? "text-yellow-400" : "text-neutral-300",
-                "text-base"
-              )}
-            >
-              ★
-            </span>
-          ))}
-        </div>
+        {typeof book.rating === "number" && book.rating > 0 && (
+          <div className="flex gap-1 mt-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <span
+                key={i}
+                className={cn(
+                  i < (book.rating ?? 0)
+                    ? "text-yellow-400"
+                    : "text-neutral-300",
+                  "text-base"
+                )}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        )}
         {showDetails && progresso !== null && (
           <>
             <div className="text-xs text-neutral-500 mt-2 flex justify-between">
@@ -97,50 +107,49 @@ export function BookCard({
                 {book.currentPage}/{book.pages} ({progresso}%)
               </span>
             </div>
-            <div className="w-full h-2 bg-neutral-200 rounded-full overflow-hidden mt-1">
-              <div
-                className="h-2 bg-black rounded-full"
-                style={{ width: `${progresso}%` }}
-              />
-            </div>
+            <Progress value={progresso} className="h-2 mt-1" />
           </>
         )}
       </div>
       {/* Ações */}
       <div className="flex flex-col gap-2 ml-4 shrink-0 items-end justify-center">
         <button
-          onClick={onView}
+          onClick={() => {
+            window.location.href = `/livro/${book.id}`;
+          }}
           aria-label="Ver livro"
-          className="text-neutral-500 hover:text-black"
+          className="text-neutral-500 hover:text-black cursor-pointer"
+          title="Visualizar detalhes do livro"
         >
-          <Link
-            href={`/livro/${book.id}`}
-            title="Visualizar detalhes do livro"
-            onClick={(e) => {
-              if (onView) {
-                e.preventDefault();
-                onView();
-              }
-            }}
-          >
-            <Eye size={20} />
-          </Link>
+          <Eye size={20} />
         </button>
         <button
-          onClick={onEdit}
+          onClick={() => {
+            window.location.href = `/livro/${book.id}/editar`;
+          }}
           aria-label="Editar livro"
-          className="text-neutral-500 hover:text-black"
+          className="text-neutral-500 hover:text-black cursor-pointer"
+          title="Editar livro"
         >
           <Pencil size={20} />
         </button>
-        {onDelete && (
-          <button
-            onClick={onDelete}
-            aria-label="Excluir livro"
-            className="text-neutral-500 hover:text-red-600"
-          >
-            <Trash2 size={20} />
-          </button>
+        {showDeleteButton && (
+          <>
+            <button
+              onClick={() => setShowDelete(true)}
+              aria-label="Excluir livro"
+              className="text-neutral-500 hover:text-red-600 cursor-pointer"
+            >
+              <Trash2 size={20} />
+            </button>
+            <ConfirmDeleteModal
+              open={!!showDelete}
+              bookTitle={book.title}
+              bookId={book.id}
+              onCancel={() => setShowDelete(false)}
+              onDeleted={onDeleted}
+            />
+          </>
         )}
       </div>
     </div>
