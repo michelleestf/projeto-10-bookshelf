@@ -1,6 +1,8 @@
-import { initialBooks } from "@/lib/books";
+"use client";
+import React from "react";
 import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
+import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 import Link from "next/link";
 
 import {
@@ -14,16 +16,40 @@ import {
   Search,
 } from "lucide-react";
 
-function getStats() {
-  const total = initialBooks.length;
-  const lendo = initialBooks.filter((b) => b.status === "LENDO").length;
-  const finalizados = initialBooks.filter((b) => b.status === "LIDO").length;
-  const paginas = initialBooks.reduce((acc, b) => acc + (b.pages || 0), 0);
-  return { total, lendo, finalizados, paginas };
-}
-
 export default function Dashboard() {
-  const stats = getStats();
+  const [books, setBooks] = React.useState([]);
+  const [stats, setStats] = React.useState({
+    total: 0,
+    lendo: 0,
+    finalizados: 0,
+    paginas: 0,
+  });
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    async function fetchBooks() {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/books");
+        const data = await res.json();
+        setBooks(data);
+        setStats({
+          total: data.length,
+          lendo: data.filter((b: any) => b.status === "LENDO").length,
+          finalizados: data.filter((b: any) => b.status === "LIDO").length,
+          paginas: data.reduce(
+            (acc: number, b: any) => acc + (b.pages || 0),
+            0
+          ),
+        });
+      } catch (e) {
+        setBooks([]);
+        setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
+      }
+      setLoading(false);
+    }
+    fetchBooks();
+  }, []);
   return (
     <main className="max-w-7xl mx-auto px-6 py-10">
       <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
@@ -78,9 +104,14 @@ export default function Dashboard() {
           <Card className="border border-neutral-200 shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Livros Recentes</h2>
             <div className="flex flex-col gap-3">
-              {initialBooks.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
+              {loading
+                ? Array.from({ length: 3 }).map((_, i) => (
+                    <BookCardSkeleton key={i} />
+                  ))
+                : books
+                    .slice(-3)
+                    .reverse()
+                    .map((book: any) => <BookCard key={book.id} book={book} />)}
             </div>
           </Card>
         </section>

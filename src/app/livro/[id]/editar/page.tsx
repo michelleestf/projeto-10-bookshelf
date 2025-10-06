@@ -60,8 +60,6 @@ export default function EditarLivroPage() {
     }
     // Procurar também nos livros iniciais
     if (!books.find((b) => b.id === id)) {
-      const { initialBooks } = require("@/lib/books");
-      books = [...books, ...initialBooks.filter((b: Book) => b.id === id)];
     }
     const found = books.find((b) => b.id === id);
     if (found) {
