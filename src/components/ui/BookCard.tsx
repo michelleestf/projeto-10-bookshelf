@@ -41,7 +41,7 @@ export function BookCard({
       ? Math.round((book.currentPage / book.pages) * 100)
       : null;
   return (
-    <div className="p-4 bg-white dark:bg-gray-900 rounded-xl border dark:border-gray-700 flex items-center gap-6 min-h-[100px]">
+    <div className="p-4 bg-card rounded-xl border border-border flex items-center gap-6 min-h-[100px] transition-colors">
       {/* Capa do livro */}
       <div className="w-[56px] h-[80px] flex items-center justify-center flex-shrink-0">
         <Image
@@ -51,21 +51,38 @@ export function BookCard({
           alt={book.title}
           width={56}
           height={80}
-          className="rounded-md object-cover border dark:border-gray-700 w-[56px] h-[80px]"
+          className="rounded-md object-cover border w-[56px] h-[80px]"
         />
       </div>
       {/* Informações do livro */}
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-base leading-snug line-clamp-2 mb-0.5 dark:text-gray-100">
+        <div className="font-semibold text-base leading-snug line-clamp-2 mb-0.5 text-card-foreground">
           {book.title}
         </div>
-        <div className="text-sm text-neutral-500 dark:text-gray-400 mb-2">{book.author}</div>
+        <div className="text-sm text-muted-foreground mb-2">{book.author}</div>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* ...existing code... */}
+          {book.status && (
+            <Badge
+              color={
+                statusMap[book.status].color as
+                | "info"
+                | "success"
+                | "muted"
+                | "warning"
+                | "danger"
+              }
+            >
+              {statusMap[book.status].label}
+            </Badge>
+          )}
+          {showDetails && book.genre && (
+            <Badge color="muted">{book.genre}</Badge>
+          )}
           {showDetails && book.year && (
-            <span className="text-neutral-500 dark:text-gray-400 text-sm ml-1">{book.year}</span>
+            <span className="text-muted-foreground text-sm ml-1">{book.year}</span>
           )}
         </div>
+
         {typeof book.rating === "number" && book.rating > 0 && (
           <div className="flex gap-1 mt-1">
             {Array.from({ length: 5 }).map((_, i) => (
@@ -74,7 +91,7 @@ export function BookCard({
                 className={cn(
                   i < (book.rating ?? 0)
                     ? "text-yellow-400"
-                    : "text-neutral-300 dark:text-gray-700",
+                    : "text-neutral-300",
                   "text-base"
                 )}
               >
@@ -85,7 +102,7 @@ export function BookCard({
         )}
         {showDetails && progresso !== null && (
           <>
-            <div className="text-xs text-neutral-500 dark:text-gray-400 mt-2 flex justify-between">
+            <div className="text-xs text-muted-foreground mt-2 flex justify-between">
               <span>Progresso</span>
               <span>
                 {book.currentPage}/{book.pages} ({progresso}%)
@@ -98,28 +115,41 @@ export function BookCard({
       {/* Ações */}
       <div className="flex flex-col gap-2 ml-4 shrink-0 items-end justify-center">
         <button
-          // ...existing code...
-          className="text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-gray-100 cursor-pointer"
-          // ...existing code...
+          onClick={() => {
+            window.location.href = `/livro/${book.id}`;
+          }}
+          aria-label="Ver livro"
+          className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+          title="Visualizar detalhes do livro"
         >
           <Eye size={20} />
         </button>
         <button
-          // ...existing code...
-          className="text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-gray-100 cursor-pointer"
-          // ...existing code...
+          onClick={() => {
+            window.location.href = `/livro/${book.id}/editar`;
+          }}
+          aria-label="Editar livro"
+          className="text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+          title="Editar livro"
         >
           <Pencil size={20} />
         </button>
         {showDeleteButton && (
           <>
             <button
-              // ...existing code...
-              className="text-neutral-500 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 cursor-pointer"
+              onClick={() => setShowDelete(true)}
+              aria-label="Excluir livro"
+              className="text-muted-foreground hover:text-destructive cursor-pointer transition-colors"
             >
               <Trash2 size={20} />
             </button>
-            {/* ...existing code... */}
+            <ConfirmDeleteModal
+              open={!!showDelete}
+              bookTitle={book.title}
+              bookId={book.id}
+              onCancel={() => setShowDelete(false)}
+              onDeleted={onDeleted}
+            />
           </>
         )}
       </div>

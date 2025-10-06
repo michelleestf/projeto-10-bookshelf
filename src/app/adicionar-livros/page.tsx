@@ -163,7 +163,7 @@ export default function AdicionarLivros() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <div className="order-2 sm:order-1">
-            <h1 className="text-3xl font-bold mb-2">Adicionar Novo Livro</h1>
+            <h1 className="text-3xl font-bold mb-2 text-foreground">Adicionar Novo Livro</h1>
             <p className="text-neutral-600 text-lg">
               Preencha as informações do livro que deseja adicionar à sua
               biblioteca.
@@ -182,20 +182,20 @@ export default function AdicionarLivros() {
       </div>
       {/* Progresso do Preenchimento */}
       <Card className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">
+        <h2 className="text-lg font-semibold mb-2 text-card-foreground">
           Progresso do Preenchimento
         </h2>
-        <p className="text-xs text-gray-500 mb-2">
-          Os campos marcados com <span className="text-red-500">*</span> são
+        <p className="text-xs text-muted-foreground mb-2">
+          Os campos marcados com <span className="text-destructive">*</span> são
           obrigatórios.
         </p>
         <div className="flex items-center gap-4">
           <Progress value={progresso} className="h-2.5 w-full" />
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-muted-foreground">
             {progresso}%
           </span>
         </div>
-        <span className="text-sm text-gray-500">Campos preenchidos</span>
+        <span className="text-sm text-muted-foreground">Campos preenchidos</span>
       </Card>
 
       {/* Grid principal */}
@@ -207,18 +207,18 @@ export default function AdicionarLivros() {
             <h3 className="text-md font-semibold mb-4">Informações Básicas</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium">
-                  Título <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-card-foreground">
+                  Título <span className="text-destructive">*</span>
                 </label>
                 <Input
                   placeholder="Digite o título do livro"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                />
+                />text
               </div>
               <div>
-                <label className="block text-sm font-medium">
-                  Autor <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-card-foreground">
+                  Autor <span className="text-destructive">*</span>
                 </label>
                 <Input
                   placeholder="Digite o nome do autor"
@@ -227,7 +227,7 @@ export default function AdicionarLivros() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium text-card-foreground">
                   Gênero <span className="text-red-500">*</span>
                 </label>
                 <Select
@@ -247,7 +247,7 @@ export default function AdicionarLivros() {
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium text-card-foreground">
                   Ano de Publicação
                 </label>
                 <Input
@@ -258,7 +258,7 @@ export default function AdicionarLivros() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">ISBN</label>
+                <label className="block text-sm font-medium text-card-foreground">ISBN</label>
                 <Input
                   placeholder="978-85-123-4567-8"
                   value={isbn}
@@ -275,8 +275,8 @@ export default function AdicionarLivros() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium">
-                  Status de Leitura <span className="text-red-500">*</span>
+                <label className="block text-sm font-medium text-card-foreground">
+                  Status de Leitura <span className="text-destructive">*</span>
                 </label>
                 <Select
                   value={status}
@@ -294,13 +294,13 @@ export default function AdicionarLivros() {
                   </SelectContent>
                 </Select>
                 {status && (
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     {statusOptions.find((opt) => opt.value === status)?.desc}
                   </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium text-card-foreground">
                   Total de Páginas
                 </label>
                 <Input
@@ -311,7 +311,7 @@ export default function AdicionarLivros() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium text-card-foreground">
                   Página Atual
                 </label>
                 <Input
@@ -322,7 +322,7 @@ export default function AdicionarLivros() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 text-card-foreground">
                   Avaliação (1-5 estrelas)
                 </label>
                 <StarRating value={rating} onChange={setRating} />
@@ -340,7 +340,7 @@ export default function AdicionarLivros() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium">Sinopse</label>
+                <label className="block text-sm font-medium text-card-foreground">Sinopse</label>
                 <Textarea
                   rows={3}
                   placeholder="Descrição breve do enredo do livro..."
@@ -350,7 +350,7 @@ export default function AdicionarLivros() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium text-card-foreground">
                   Notas Pessoais
                 </label>
                 <Textarea
@@ -371,7 +371,7 @@ export default function AdicionarLivros() {
           <Card className="flex flex-col gap-4">
             <h3 className="text-md font-semibold mb-4">Capa do Livro</h3>
             <div>
-              <label className="block text-sm font-medium">URL da Capa</label>
+              <label className="block text-sm font-medium text-card-foreground">URL da Capa</label>
               <Input
                 placeholder="https://exemplo.com/capa.jpg"
                 value={cover}
@@ -379,7 +379,7 @@ export default function AdicionarLivros() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2 text-card-foreground">
                 Preview da Capa
               </label>
               <div className="w-full">
@@ -390,7 +390,7 @@ export default function AdicionarLivros() {
                     className="w-full object-cover rounded"
                   />
                 ) : (
-                  <span className="text-gray-400 flex flex-col items-center h-48 w-full justify-center">
+                  <span className="text-muted-foreground flex flex-col items-center h-48 w-full justify-center">
                     <Eye className="h-8 w-8 mb-1" />
                     Preview da capa aparecerá aqui
                   </span>
