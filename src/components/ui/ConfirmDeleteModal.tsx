@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ interface ConfirmDeleteModalProps {
   bookTitle: string;
   bookId: string;
   onCancel: () => void;
+  onDeleted?: () => void;
 }
 
 export function ConfirmDeleteModal({
@@ -22,7 +24,30 @@ export function ConfirmDeleteModal({
   bookTitle,
   bookId,
   onCancel,
+  onDeleted,
 }: ConfirmDeleteModalProps) {
+  async function deleteBook(bookId: string) {
+    const res = await fetch(`/api/books/${bookId}`, { method: "DELETE" });
+    return res.ok;
+  }
+
+  function handleDelete() {
+    (async () => {
+      try {
+        const ok = await deleteBook(bookId);
+        if (ok) {
+          onCancel();
+          if (onDeleted) onDeleted();
+          toast.success("Livro excluído com sucesso.");
+        } else {
+          toast.error("Erro ao excluir livro.");
+        }
+      } catch {
+        toast.error("Erro ao excluir livro.");
+      }
+    })();
+  }
+
   return (
     <Dialog
       open={open}
@@ -43,9 +68,7 @@ export function ConfirmDeleteModal({
           <Button
             variant="destructive"
             className="w-full cursor-pointer"
-            onClick={() => {
-              /* lógica de exclusão aqui */
-            }}
+            onClick={handleDelete}
           >
             Sim, excluir
           </Button>

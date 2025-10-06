@@ -19,6 +19,7 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import NotFound from "@/components/ui/NotFound";
+import BookDetailsSkeleton from "@/components/ui/BookDetailsSkeleton";
 
 const statusMap = {
   QUERO_LER: { label: "Quero Ler", color: "default" },
@@ -67,8 +68,16 @@ export default function BookPage({
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto py-10 px-4 text-center text-lg">
-        Carregando livro...
+      <div className="max-w-7xl mx-auto py-10 px-4">
+        <div className="flex items-center gap-2 mb-6">
+          <Link
+            href="/biblioteca"
+            className="text-sm text-neutral-700 hover:text-black flex items-center gap-2 font-medium"
+          >
+            <ArrowLeft size={18} /> Voltar à Biblioteca
+          </Link>
+        </div>
+        <BookDetailsSkeleton />
       </div>
     );
   }
@@ -77,9 +86,6 @@ export default function BookPage({
       <NotFound message="O livro que você está tentando acessar não existe ou foi removido." />
     );
   }
-
-  const addedAt = book.addedAt || "";
-  const updatedAt = book.updatedAt || "";
   return (
     <div className="max-w-7xl mx-auto py-10 px-4">
       <div className="flex items-center gap-2 mb-6">
@@ -98,32 +104,10 @@ export default function BookPage({
               book.cover || "https://covers.openlibrary.org/b/id/10909258-L.jpg"
             }
             alt={book.title}
-            width={220}
-            height={320}
-            className="rounded-lg object-cover border w-[220px] h-[320px]"
+            width={260}
+            height={390}
+            className="rounded-lg object-cover border w-[260px]"
           />
-          <div className="mt-6 w-full flex flex-col gap-2">
-            <Button
-              variant="default"
-              className="w-full flex items-center gap-2 justify-center text-base font-semibold"
-              onClick={handleEdit}
-            >
-              <Pencil size={18} /> Editar Livro
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full flex items-center gap-2 justify-center text-base font-semibold bg-red-600 hover:bg-red-700 text-white border-none"
-              onClick={handleDeleteClick}
-            >
-              <Trash2 size={18} /> Excluir Livro
-            </Button>
-            <ConfirmDeleteModal
-              open={showDelete}
-              bookTitle={book.title}
-              bookId={book.id}
-              onCancel={() => setShowDelete(false)}
-            />
-          </div>
         </div>
         {/* Informações do livro */}
         <div className="flex-1 flex flex-col">
@@ -132,7 +116,7 @@ export default function BookPage({
             {book.status && (
               <Badge
                 color={statusMap[book.status].color}
-                className="text-xs px-3 py-1 font-semibold rounded-full whitespace-nowrap"
+                className="text-xs px-3 py-1 font-semibold rounded-full whitespace-nowrap w-fit"
               >
                 {statusMap[book.status].label}
               </Badge>
@@ -240,6 +224,31 @@ export default function BookPage({
             {book.updatedAt && (
               <span>Última atualização: {formatDateToBR(book.updatedAt)}</span>
             )}
+          </div>
+          <div className="mt-6 w-full grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <Button
+              variant="outline"
+              className="w-full flex items-center gap-2 justify-center cursor-pointer"
+              onClick={handleEdit}
+            >
+              <Pencil size={18} /> Editar Livro
+            </Button>
+            <Button
+              variant="outline"
+              className="w-full flex items-center gap-2 justify-center cursor-pointer hover:border-red-500 hover:text-red-600"
+              onClick={handleDeleteClick}
+            >
+              <Trash2 size={18} /> Excluir Livro
+            </Button>
+            <ConfirmDeleteModal
+              open={showDelete}
+              bookTitle={book.title}
+              bookId={book.id}
+              onCancel={() => setShowDelete(false)}
+              onDeleted={() => {
+                router.push("/biblioteca");
+              }}
+            />
           </div>
         </div>
       </div>

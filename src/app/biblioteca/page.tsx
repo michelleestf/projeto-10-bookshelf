@@ -149,7 +149,13 @@ export default function BibliotecaPage() {
           </div>
         ) : (
           books.map((book) => (
-            <BookCard key={book.id} book={book} showDetails showDeleteButton />
+            <BookCard
+              key={book.id}
+              book={book}
+              showDetails
+              showDeleteButton
+              onDeleted={() => fetchBooks(search, genre, status)}
+            />
           ))
         )}
       </div>
