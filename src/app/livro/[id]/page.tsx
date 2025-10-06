@@ -183,6 +183,16 @@ export default function BookPage({
                 <span className="text-xs text-neutral-500">
                   {book.currentPage || 0} / {book.pages} páginas
                 </span>
+                <span className="text-xs text-neutral-500 ">
+                  (
+                  {(() => {
+                    const total = book.pages || 0;
+                    const atual = book.currentPage || 0;
+                    if (!total) return "0%";
+                    return `${Math.round((atual / total) * 100)}%`;
+                  })()}
+                  )
+                </span>
               </div>
               <Progress
                 value={Math.min(
