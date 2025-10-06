@@ -38,8 +38,8 @@ export interface Book {
   currentPage?: number;
   notes?: string;
   isbn?: string;
-  addedAt?: string; // data de adição (formato ISO ou dd/mm/yyyy)
-  updatedAt?: string; // data de atualização (formato ISO ou dd/mm/yyyy)
+  addedAt?: string;
+  updatedAt?: string;
 }
 
 export const initialBooks: Book[] = [
@@ -56,6 +56,7 @@ export const initialBooks: Book[] = [
     cover:
       "https://m.media-amazon.com/images/I/71wANojhEKL._UF1000,1000_QL80_.jpg",
     status: "LENDO",
+    addedAt: "01/10/2025",
   },
   {
     id: "2",
@@ -68,6 +69,7 @@ export const initialBooks: Book[] = [
     synopsis: "Explora a evolução da espécie humana e suas conquistas.",
     cover: "https://m.media-amazon.com/images/I/71-ghLb8qML.jpg",
     status: "QUERO_LER",
+    addedAt: "01/10/2025",
   },
   {
     id: "3",
@@ -80,6 +82,7 @@ export const initialBooks: Book[] = [
     synopsis: "A saga da família Buendía na fictícia Macondo.",
     cover: "https://m.media-amazon.com/images/I/817esPahlrL.jpg",
     status: "ABANDONADO",
+    addedAt: "01/10/2025",
   },
   {
     id: "4",
@@ -92,6 +95,7 @@ export const initialBooks: Book[] = [
     synopsis: "A jornada épica de Frodo e seus amigos para destruir o Um Anel.",
     cover: "https://m.media-amazon.com/images/I/81hCVEC0ExL.jpg",
     status: "LIDO",
+    addedAt: "01/10/2025",
   },
   {
     id: "5",
@@ -106,5 +110,6 @@ export const initialBooks: Book[] = [
     cover:
       "https://m.media-amazon.com/images/I/4138uiy6ghL._UF1000,1000_QL80_.jpg",
     status: "PAUSADO",
+    addedAt: "01/10/2025",
   },
 ];

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { genres as initialGenres } from "@/lib/books";
 
 declare global {
-  // eslint-disable-next-line no-var
   var genresArray: string[] | undefined;
 }
 let genres: string[] =

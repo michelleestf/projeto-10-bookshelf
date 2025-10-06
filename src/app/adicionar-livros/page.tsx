@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, Eye, Save, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -20,6 +21,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function AdicionarLivros() {
+  const router = useRouter();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [genre, setGenre] = useState<Genre | "">("");
@@ -33,51 +35,48 @@ export default function AdicionarLivros() {
   const [notes, setNotes] = useState("");
   const [cover, setCover] = useState("");
   const [coverValid, setCoverValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isValid = Boolean(title.trim() && author.trim() && genre && status);
 
-  function handleAddBook(e: React.FormEvent) {
+  async function handleAddBook(e: React.FormEvent) {
     e.preventDefault();
     if (!isValid) {
       toast.error("Preencha todos os campos obrigatórios!");
       return;
     }
+    setLoading(true);
     try {
-      const newBook = {
-        id: Date.now().toString(),
-        title: title.trim(),
-        author: author.trim(),
-        genre,
-        year: year ? Number(year) : undefined,
-        isbn: isbn || undefined,
-        status,
-        pages: pages ? Number(pages) : undefined,
-        currentPage: currentPage ? Number(currentPage) : undefined,
-        rating: rating || undefined,
-        synopsis: synopsis || undefined,
-        notes: notes || undefined,
-        cover: cover || undefined,
-      };
-      const books = JSON.parse(localStorage.getItem("bookshelf-books") || "[]");
-      books.push(newBook);
-      localStorage.setItem("bookshelf-books", JSON.stringify(books));
+      const newBook: Record<string, any> = {};
+      if (title.trim()) newBook.title = title.trim();
+      if (author.trim()) newBook.author = author.trim();
+      if (genre) newBook.genre = genre;
+      if (year) newBook.year = Number(year);
+      if (isbn) newBook.isbn = isbn;
+      if (status) newBook.status = status;
+      if (pages) newBook.pages = Number(pages);
+      if (currentPage) newBook.currentPage = Number(currentPage);
+      if (rating) newBook.rating = rating;
+      if (synopsis) newBook.synopsis = synopsis;
+      if (notes) newBook.notes = notes;
+      if (cover) newBook.cover = cover;
+      const response = await fetch("/api/books", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newBook),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(errorData.error || "Erro ao adicionar livro!");
+        setLoading(false);
+        return;
+      }
+      const createdBook = await response.json();
       toast.success("Livro adicionado com sucesso!");
-
-      setTitle("");
-      setAuthor("");
-      setGenre("");
-      setYear("");
-      setIsbn("");
-      setStatus("");
-      setPages("");
-      setCurrentPage("");
-      setRating(0);
-      setSynopsis("");
-      setNotes("");
-      setCover("");
-      setCoverValid(false);
+      router.push(`/livro/${createdBook.id}`);
     } catch (err) {
       toast.error("Erro ao adicionar livro!");
+      setLoading(false);
     }
   }
 
@@ -403,12 +402,21 @@ export default function AdicionarLivros() {
           <div className="flex flex-col gap-2">
             <Button
               className="w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-              disabled={!isValid}
+              disabled={!isValid || loading}
               onClick={handleAddBook}
               type="button"
             >
-              <Save className="h-5 w-5" />
-              Adicionar Livro
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Adicionando...
+                </>
+              ) : (
+                <>
+                  <Save className="h-5 w-5" />
+                  Adicionar Livro
+                </>
+              )}
             </Button>
             <Button variant="outline" className="w-full cursor-pointer">
               Cancelar
