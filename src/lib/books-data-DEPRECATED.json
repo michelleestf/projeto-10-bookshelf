@@ -5,7 +5,7 @@
     "author": "George R. R. Martin",
     "genre": "Fantasia",
     "status": "LIDO",
-    "addedAt": "2025-10-06T00:21:48.808Z",
+    "createdAt": "2025-10-06T00:21:48.808Z",
     "year": 1996,
     "updatedAt": "2025-10-06T02:53:36.299Z",
     "pages": 592,
@@ -22,7 +22,7 @@
     "author": "George R.R. Martin",
     "genre": "Fantasia",
     "status": "LIDO",
-    "addedAt": "2025-10-06T02:14:46.372Z",
+    "createdAt": "2025-10-06T02:14:46.372Z",
     "year": 1998,
     "isbn": "978-8556510792",
     "pages": 648,
@@ -44,6 +44,6 @@
     "status": "LENDO",
     "currentPage": 357,
     "isbn": "978-8544102947",
-    "addedAt": "2025-10-06T03:44:39.376Z"
+    "createdAt": "2025-10-06T03:44:39.376Z"
   }
 ]

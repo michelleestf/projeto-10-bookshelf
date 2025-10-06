@@ -15,9 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
 import type { ReadingStatus, Genre, Book } from "@/lib/books";
-import { genres } from "@/lib/books";
 import { toast } from "react-toastify";
-import { ArrowLeft, Save, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Star, Loader2, Pencil } from "lucide-react";
 import NotFound from "@/components/ui/NotFound";
 import { EditarLivroSkeleton } from "@/components/ui/EditarLivroSkeleton";
 import "react-toastify/dist/ReactToastify.css";
@@ -33,7 +32,8 @@ export default function EditarLivroPage() {
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState<Genre | "">("");
+  const [genre, setGenre] = useState<string>("");
+  const [genres, setGenres] = useState<string[]>([]);
   const [year, setYear] = useState("");
   const [isbn, setIsbn] = useState("");
   const [status, setStatus] = useState<ReadingStatus | "">("");
@@ -56,7 +56,11 @@ export default function EditarLivroPage() {
         setBook(found);
         setTitle(found.title || "");
         setAuthor(found.author || "");
-        setGenre(found.genre || "");
+        setGenre(
+          typeof found.genre === "string"
+            ? found.genre
+            : found.genre?.name || ""
+        );
         setYear(found.year ? String(found.year) : "");
         setIsbn(found.isbn || "");
         setStatus(found.status || "");
@@ -73,6 +77,12 @@ export default function EditarLivroPage() {
       })
       .finally(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+  }, []);
 
   useEffect(() => {
     if (cover && cover.match(/^https?:\/\//i)) {
@@ -311,26 +321,8 @@ export default function EditarLivroPage() {
                         onChange={(e) => setAuthor(e.target.value)}
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium">
-                        Gênero <span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        value={genre}
-                        onValueChange={(v) => setGenre(v as Genre)}
-                      >
-                        <SelectTrigger className="w-full cursor-pointer">
-                          <SelectValue placeholder="Selecione o gênero" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {genres.map((g) => (
-                            <SelectItem key={g} value={g}>
-                              {g}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div>
                       <label className="block text-sm font-medium">
                         Ano de Publicação
@@ -349,6 +341,36 @@ export default function EditarLivroPage() {
                         value={isbn}
                         onChange={(e) => setIsbn(e.target.value)}
                       />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium">
+                      Gênero <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select value={genre} onValueChange={setGenre}>
+                          <SelectTrigger className="w-full cursor-pointer">
+                            <SelectValue placeholder="Selecione o gênero" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {genres.map((g) => (
+                              <SelectItem key={g} value={g}>
+                                {g}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Editar gêneros disponíveis"
+                        className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none"
+                        onClick={() => toast.info("Em breve!")}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </Card>

@@ -1,0 +1,42 @@
+// Prisma schema for Bookshelf migration from JSON to SQLite
+// Status: QUERO_LER (default), LENDO, LIDO, PAUSADO, ABANDONADO
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum ReadingStatus {
+  QUERO_LER
+  LENDO
+  LIDO
+  PAUSADO
+  ABANDONADO
+}
+
+model Genre {
+  id    String  @id @default(uuid())
+  name  String  @unique
+  books Book[]
+}
+
+model Book {
+  id          String        @id @default(uuid())
+  title       String
+  author      String
+  genreId     String
+  genre       Genre        @relation(fields: [genreId], references: [id])
+  status      ReadingStatus @default(QUERO_LER)
+  currentPage Int?
+  pages       Int?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  isbn        String?
+  notes       String?
+  synopsis    String?
+  cover       String?
+}

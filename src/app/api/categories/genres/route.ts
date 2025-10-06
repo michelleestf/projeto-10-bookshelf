@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
-import { genres as initialGenres } from "@/lib/books";
-
-declare global {
-  var genresArray: string[] | undefined;
-}
-let genres: string[] =
-  globalThis.genresArray || (globalThis.genresArray = [...initialGenres]);
+import { getGenreByName } from "@/lib/books";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
@@ -17,10 +12,11 @@ export async function POST(request: Request) {
       );
     }
     const genreName = name.trim();
-    if (genres.some((g) => g.toLowerCase() === genreName.toLowerCase())) {
+    const exists = await getGenreByName(genreName);
+    if (exists) {
       return NextResponse.json({ error: "Gênero já existe." }, { status: 409 });
     }
-    genres.push(genreName);
+    await prisma.genre.create({ data: { name: genreName } });
     return NextResponse.json({ name: genreName }, { status: 201 });
   } catch {
     return NextResponse.json(
