@@ -15,6 +15,7 @@ import {
   Book,
   Search,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function Dashboard() {
   const [books, setBooks] = React.useState([]);
@@ -27,28 +28,23 @@ export default function Dashboard() {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    async function fetchBooks() {
+    async function fetchDashboard() {
       setLoading(true);
       try {
-        const res = await fetch("/api/books");
+        const res = await fetch("/api/books/dashboard");
         const data = await res.json();
-        setBooks(data);
-        setStats({
-          total: data.length,
-          lendo: data.filter((b: any) => b.status === "LENDO").length,
-          finalizados: data.filter((b: any) => b.status === "LIDO").length,
-          paginas: data.reduce(
-            (acc: number, b: any) => acc + (b.pages || 0),
-            0
-          ),
-        });
+        setBooks(data.recentes || []);
+        setStats(
+          data.stats || { total: 0, lendo: 0, finalizados: 0, paginas: 0 }
+        );
       } catch (e) {
         setBooks([]);
         setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
+        toast.error("Erro ao carregar o dashboard.");
       }
       setLoading(false);
     }
-    fetchBooks();
+    fetchDashboard();
   }, []);
   return (
     <main className="max-w-7xl mx-auto px-6 py-10">
@@ -108,10 +104,9 @@ export default function Dashboard() {
                 ? Array.from({ length: 3 }).map((_, i) => (
                     <BookCardSkeleton key={i} />
                   ))
-                : books
-                    .slice(-3)
-                    .reverse()
-                    .map((book: any) => <BookCard key={book.id} book={book} />)}
+                : books.map((book: any) => (
+                    <BookCard key={book.id} book={book} />
+                  ))}
             </div>
           </Card>
         </section>

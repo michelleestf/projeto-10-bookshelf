@@ -1,6 +1,6 @@
 export default function BookDetailsSkeleton() {
   return (
-    <div className="max-w-7xl mx-auto py-10 px-4">
+    <div className="max-w-7xl mx-auto">
       <div className="bg-white rounded-2xl border p-6 flex flex-col md:flex-row gap-8 animate-pulse">
         {/* Capa do livro */}
         <div className="w-full md:w-[260px] flex flex-col items-center">
