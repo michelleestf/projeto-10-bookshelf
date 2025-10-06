@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { initialBooks, Book } from "@/lib/books";
+import { Book } from "@/lib/books";
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -12,8 +12,7 @@ async function readBooks(): Promise<Book[]> {
     if (Array.isArray(books)) return books;
     return [];
   } catch {
-    // Se não existir, retorna os iniciais
-    return [...initialBooks];
+    return [];
   }
 }
 

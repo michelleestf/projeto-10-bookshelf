@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { initialBooks, Book } from "@/lib/books";
+import { Book } from "@/lib/books";
 import { promises as fs } from "fs";
 import path from "path";
 
@@ -26,13 +26,8 @@ export async function GET(
 ) {
   try {
     const books = await readBooks();
-    console.log("Buscando livro com id:", params.id);
     const book = books.find((b) => b.id === params.id);
     if (!book) {
-      console.log(
-        "IDs disponíveis:",
-        books.map((b) => b.id)
-      );
       return NextResponse.json(
         { error: "Livro não encontrado." },
         { status: 404 }
