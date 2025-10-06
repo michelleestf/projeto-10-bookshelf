@@ -56,24 +56,25 @@ export async function PUT(
       );
     }
     const data = await req.json();
-    const { title, author, genre, year } = data;
-
-    if (title !== undefined && (typeof title !== "string" || !title.trim())) {
+    if (
+      data.title !== undefined &&
+      (typeof data.title !== "string" || !data.title.trim())
+    ) {
       return NextResponse.json({ error: "Título inválido." }, { status: 400 });
     }
     if (
-      author !== undefined &&
-      (typeof author !== "string" || !author.trim())
+      data.author !== undefined &&
+      (typeof data.author !== "string" || !data.author.trim())
     ) {
       return NextResponse.json({ error: "Autor inválido." }, { status: 400 });
     }
-    if (year !== undefined && typeof year !== "number") {
+    if (data.year !== undefined && typeof data.year !== "number") {
       return NextResponse.json(
         { error: "Ano deve ser um número." },
         { status: 400 }
       );
     }
-    if (genre !== undefined && typeof genre !== "string") {
+    if (data.genre !== undefined && typeof data.genre !== "string") {
       return NextResponse.json(
         { error: "Gênero deve ser uma string." },
         { status: 400 }
@@ -81,11 +82,11 @@ export async function PUT(
     }
 
     const book = books[idx];
-    if (title !== undefined) book.title = title.trim();
-    if (author !== undefined) book.author = author.trim();
-    if (genre !== undefined) book.genre = genre;
-    if (year !== undefined) book.year = year;
-
+    const update: any = { ...data };
+    if (typeof update.title === "string") update.title = update.title.trim();
+    if (typeof update.author === "string") update.author = update.author.trim();
+    update.updatedAt = new Date().toISOString();
+    Object.assign(book, update);
     books[idx] = book;
     await writeBooks(books);
     return NextResponse.json(book, { status: 200 });

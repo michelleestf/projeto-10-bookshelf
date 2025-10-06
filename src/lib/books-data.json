@@ -6,5 +6,21 @@
     "genre": "Fantasia",
     "status": "LIDO",
     "addedAt": "2025-10-06T00:21:48.808Z"
+  },
+  {
+    "id": "45014b30-d663-41d6-bc71-75e842e10f12",
+    "title": "A fúria dos reis: As Crônicas de Gelo e Fogo, volume 2",
+    "author": "George R.R. Martin",
+    "genre": "Fantasia",
+    "status": "LIDO",
+    "addedAt": "2025-10-06T02:14:46.372Z",
+    "year": 2019,
+    "isbn": "978-8556510792",
+    "pages": 648,
+    "currentPage": 648,
+    "rating": 5,
+    "synopsis": "Um cometa da cor de fogo e sangue corta os céus. E, da antiga cidadela de Pedra do Dragão às costas áridas de Winterfell, reina o caos.\nEm A fúria dos reis , seis facções disputam o controle de uma terra dividida e o direito de ocupar o Trono de Ferro de Westeros – e estão dispostos a encarar tempestades, levantes e guerras para isso.\nNesta história, irmão trama contra irmão e os mortos se levantam para caminhar pela noite. Aqui, uma princesa se disfarça de menino órfão, um cavaleiro se prepara para encarar uma pérfida feiticeira e bárbaros descem das Montanhas da Lua para saquear os campos.\nEm um contexto de incesto e fratricídio, alquimia e assassinato, a vitória será dos homens e mulheres que possuírem o mais frio aço... e o mais frio coração. Pois, quando se desperta a fúria dos reis, a terra inteira treme.",
+    "cover": "https://m.media-amazon.com/images/I/91PglZzF9kL._SL1500_.jpg",
+    "updatedAt": "2025-10-06T02:30:07.814Z"
   }
 ]
