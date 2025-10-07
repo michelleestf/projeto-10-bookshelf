@@ -76,7 +76,9 @@ export function BookCard({
             </Badge>
           )}
           {showDetails && book.genre && (
-            <Badge color="muted">{book.genre}</Badge>
+            <Badge color="muted">
+              {typeof book.genre === "string" ? book.genre : book.genre.name}
+            </Badge>
           )}
           {showDetails && book.year && (
             <span className="text-neutral-500 text-sm ml-1">{book.year}</span>

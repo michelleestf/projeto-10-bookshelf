@@ -15,14 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
 import type { ReadingStatus, Genre, Book } from "@/lib/books";
-import { genres } from "@/lib/books";
 import { toast } from "react-toastify";
-import { ArrowLeft, Save, Star, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Star, Loader2, Pencil } from "lucide-react";
+import { GenreModal } from "@/components/ui/GenreModal";
 import NotFound from "@/components/ui/NotFound";
 import { EditarLivroSkeleton } from "@/components/ui/EditarLivroSkeleton";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditarLivroPage() {
+  const [showGenreModal, setShowGenreModal] = useState(false);
   const router = useRouter();
   const params = useParams();
   const { id } = params;
@@ -33,7 +34,8 @@ export default function EditarLivroPage() {
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState<Genre | "">("");
+  const [genre, setGenre] = useState<string>("");
+  const [genres, setGenres] = useState<string[]>([]);
   const [year, setYear] = useState("");
   const [isbn, setIsbn] = useState("");
   const [status, setStatus] = useState<ReadingStatus | "">("");
@@ -56,7 +58,11 @@ export default function EditarLivroPage() {
         setBook(found);
         setTitle(found.title || "");
         setAuthor(found.author || "");
-        setGenre(found.genre || "");
+        setGenre(
+          typeof found.genre === "string"
+            ? found.genre
+            : found.genre?.name || ""
+        );
         setYear(found.year ? String(found.year) : "");
         setIsbn(found.isbn || "");
         setStatus(found.status || "");
@@ -75,6 +81,12 @@ export default function EditarLivroPage() {
   }, [id]);
 
   useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+  }, []);
+
+  useEffect(() => {
     if (cover && cover.match(/^https?:\/\//i)) {
       setCoverValid(true);
     } else {
@@ -87,10 +99,14 @@ export default function EditarLivroPage() {
   const isChanged = (() => {
     const initial = initialBookRef.current;
     if (!initial) return false;
+    const initialGenre =
+      typeof initial.genre === "string"
+        ? initial.genre
+        : initial.genre?.name || "";
     return (
       title !== (initial.title || "") ||
       author !== (initial.author || "") ||
-      genre !== (initial.genre || "") ||
+      genre !== initialGenre ||
       year !== (initial.year ? String(initial.year) : "") ||
       isbn !== (initial.isbn || "") ||
       status !== (initial.status || "") ||
@@ -121,7 +137,7 @@ export default function EditarLivroPage() {
         title: title.trim(),
         author: author.trim(),
         genre,
-        year: year ? Number(year) : undefined,
+        year: year.trim() && !isNaN(Number(year)) ? Number(year) : undefined,
         isbn: isbn || undefined,
         status: status || undefined,
         pages: totalPagesValue,
@@ -149,7 +165,6 @@ export default function EditarLivroPage() {
       }
     } catch {
       toast.error("Erro ao atualizar livro!");
-    } finally {
       setUpdating(false);
     }
   }
@@ -311,32 +326,14 @@ export default function EditarLivroPage() {
                         onChange={(e) => setAuthor(e.target.value)}
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium">
-                        Gênero <span className="text-red-500">*</span>
-                      </label>
-                      <Select
-                        value={genre}
-                        onValueChange={(v) => setGenre(v as Genre)}
-                      >
-                        <SelectTrigger className="w-full cursor-pointer">
-                          <SelectValue placeholder="Selecione o gênero" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {genres.map((g) => (
-                            <SelectItem key={g} value={g}>
-                              {g}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                     <div>
                       <label className="block text-sm font-medium">
                         Ano de Publicação
                       </label>
                       <Input
-                        placeholder="2024"
+                        placeholder="Digite o ano de publicação (ex: 2024)"
                         type="number"
                         value={year}
                         onChange={(e) => setYear(e.target.value)}
@@ -345,10 +342,40 @@ export default function EditarLivroPage() {
                     <div>
                       <label className="block text-sm font-medium">ISBN</label>
                       <Input
-                        placeholder="978-85-123-4567-8"
+                        placeholder="Ex: 978-85-123-4567-8"
                         value={isbn}
                         onChange={(e) => setIsbn(e.target.value)}
                       />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium">
+                      Gênero <span className="text-red-500">*</span>
+                    </label>
+
+                    <div className="flex gap-2 items-center">
+                      <div className="flex-1">
+                        <Select value={genre} onValueChange={setGenre}>
+                          <SelectTrigger className="w-full cursor-pointer">
+                            <SelectValue placeholder="Selecione o gênero" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {genres.map((g) => (
+                              <SelectItem key={g} value={g}>
+                                {g}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Editar gêneros disponíveis"
+                        className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none cursor-pointer"
+                        onClick={() => setShowGenreModal(true)}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </Card>
@@ -443,7 +470,7 @@ export default function EditarLivroPage() {
                         Total de Páginas
                       </label>
                       <Input
-                        placeholder="300"
+                        placeholder="Total de páginas do livro"
                         type="number"
                         value={pages}
                         onChange={(e) => setPages(e.target.value)}
@@ -454,7 +481,7 @@ export default function EditarLivroPage() {
                         Página Atual
                       </label>
                       <Input
-                        placeholder="150"
+                        placeholder="Página atual da leitura"
                         type="number"
                         value={currentPage}
                         onChange={(e) => setCurrentPage(e.target.value)}
@@ -543,8 +570,10 @@ export default function EditarLivroPage() {
                 {/* Botões */}
                 <div className="flex flex-col gap-2">
                   <Button
-                    className="w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    disabled={updating || !isValid || !isChanged}
+                    className={`w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed${
+                      updating ? " opacity-80 pointer-events-none" : ""
+                    }`}
+                    disabled={!isValid || !isChanged}
                     type="submit"
                   >
                     {updating ? (
@@ -552,7 +581,7 @@ export default function EditarLivroPage() {
                     ) : (
                       <Save className="h-5 w-5" />
                     )}
-                    Salvar Alterações
+                    {updating ? "Salvando..." : "Salvar Alterações"}
                   </Button>
                   <Button
                     variant="outline"
@@ -567,6 +596,13 @@ export default function EditarLivroPage() {
             </div>
           </form>
         </>
+      )}
+      {showGenreModal && (
+        <GenreModal
+          open={showGenreModal}
+          onClose={() => setShowGenreModal(false)}
+          onGenresChange={setGenres}
+        />
       )}
     </div>
   );

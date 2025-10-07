@@ -1,37 +1,14 @@
 import { NextResponse } from "next/server";
-import { genres as initialGenres } from "@/lib/books";
+import { getAllGenres, getGenreByName } from "@/lib/books";
+import { prisma } from "@/lib/prisma";
 
-declare global {
-  var genresArray: string[] | undefined;
-}
-let genres: string[] =
-  globalThis.genresArray || (globalThis.genresArray = [...initialGenres]);
-
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    if (request.method === "DELETE" || searchParams.get("delete")) {
-      const name = searchParams.get("name");
-      if (!name) {
-        return NextResponse.json(
-          { error: "Nome do gênero é obrigatório para deletar." },
-          { status: 400 }
-        );
-      }
-      const idx = genres.findIndex(
-        (g) => g.toLowerCase() === name.toLowerCase()
-      );
-      if (idx === -1) {
-        return NextResponse.json(
-          { error: "Gênero não encontrado." },
-          { status: 404 }
-        );
-      }
-      genres.splice(idx, 1);
-      return new NextResponse(null, { status: 204 });
-    }
-    const data = genres.map((name) => ({ name }));
-    return NextResponse.json(data, { status: 200 });
+    const data = await getAllGenres();
+    return NextResponse.json(
+      data.map((g) => ({ name: g.name })),
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "Erro ao buscar categorias." },
@@ -50,10 +27,11 @@ export async function POST(request: Request) {
       );
     }
     const genreName = name.trim();
-    if (genres.some((g) => g.toLowerCase() === genreName.toLowerCase())) {
+    const exists = await getGenreByName(genreName);
+    if (exists) {
       return NextResponse.json({ error: "Gênero já existe." }, { status: 409 });
     }
-    genres.push(genreName);
+    await prisma.genre.create({ data: { name: genreName } });
     return NextResponse.json({ name: genreName }, { status: 201 });
   } catch {
     return NextResponse.json(
