@@ -268,7 +268,7 @@ export default function EditarLivroPage() {
                 })()}
                 className="h-2.5 w-full"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-accent-foreground">
                 {(() => {
                   const campos = [
                     title,
@@ -369,14 +369,15 @@ export default function EditarLivroPage() {
                           </SelectContent>
                         </Select>
                       </div>
-                      <button
+                      <Button
+                        variant="outline"
                         type="button"
                         aria-label="Editar gêneros disponíveis"
-                        className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none cursor-pointer"
+                        className="cursor-pointer"
                         onClick={() => setShowGenreModal(true)}
                       >
                         <Pencil className="w-4 h-4" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </Card>

@@ -97,20 +97,20 @@ function BibliotecaContent() {
     <div className="max-w-7xl mx-auto px-6 py-10">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Biblioteca</h1>
+          <h1 className="text-4xl font-bold mb-2 text-foreground">Biblioteca</h1>
         </div>
       </div>
       <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 mb-2">
         <Input
           placeholder="Buscar por título ou autor..."
-          className="flex-1"
+          className="flex-1 text-foreground"
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearch(e.target.value)
           }
         />
         <Select value={genre} onValueChange={setGenre}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 text-foreground">
             <SelectValue placeholder="Filtrar por gênero" />
           </SelectTrigger>
           <SelectContent>
@@ -122,7 +122,7 @@ function BibliotecaContent() {
           </SelectContent>
         </Select>
         <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 text-foreground">
             <SelectValue placeholder="Filtrar por status" />
           </SelectTrigger>
           <SelectContent>
