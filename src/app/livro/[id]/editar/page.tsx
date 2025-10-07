@@ -99,10 +99,14 @@ export default function EditarLivroPage() {
   const isChanged = (() => {
     const initial = initialBookRef.current;
     if (!initial) return false;
+    const initialGenre =
+      typeof initial.genre === "string"
+        ? initial.genre
+        : initial.genre?.name || "";
     return (
       title !== (initial.title || "") ||
       author !== (initial.author || "") ||
-      genre !== (initial.genre || "") ||
+      genre !== initialGenre ||
       year !== (initial.year ? String(initial.year) : "") ||
       isbn !== (initial.isbn || "") ||
       status !== (initial.status || "") ||
