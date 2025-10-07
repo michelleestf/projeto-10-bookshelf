@@ -6,8 +6,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/Input";
+
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/Input";
 import { Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "react-toastify";
 
