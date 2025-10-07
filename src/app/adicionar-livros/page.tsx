@@ -55,6 +55,24 @@ export default function AdicionarLivros() {
     }
   }, [cover]);
 
+  useEffect(() => {
+    const totalPagesValue = pages ? Number(pages) : undefined;
+    if (status === "LIDO") {
+      if (totalPagesValue) {
+        setCurrentPage(String(totalPagesValue));
+      } else {
+        setCurrentPage("");
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    const totalPagesValue = pages ? Number(pages) : undefined;
+    if (status === "LIDO" && totalPagesValue) {
+      setCurrentPage(String(totalPagesValue));
+    }
+  }, [pages]);
+
   async function handleAddBook(e: React.FormEvent) {
     e.preventDefault();
     if (!isValid) {
@@ -367,6 +385,7 @@ export default function AdicionarLivros() {
                   type="number"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(e.target.value)}
+                  disabled={status === "LIDO" && !!pages}
                 />
               </div>
               <div>

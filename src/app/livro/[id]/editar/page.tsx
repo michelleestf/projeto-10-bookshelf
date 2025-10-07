@@ -42,6 +42,25 @@ export default function EditarLivroPage() {
   const [status, setStatus] = useState<ReadingStatus | "">("");
   const [pages, setPages] = useState("");
   const [currentPage, setCurrentPage] = useState("");
+
+  useEffect(() => {
+    const totalPagesValue = pages ? Number(pages) : undefined;
+    if (status === "LIDO") {
+      if (totalPagesValue) {
+        setCurrentPage(String(totalPagesValue));
+      } else {
+        setCurrentPage("");
+      }
+    }
+  }, [status]);
+
+  useEffect(() => {
+    const totalPagesValue = pages ? Number(pages) : undefined;
+    if (status === "LIDO" && totalPagesValue) {
+      setCurrentPage(String(totalPagesValue));
+    }
+  }, [pages]);
+
   const [rating, setRating] = useState(0);
   const [synopsis, setSynopsis] = useState("");
   const [notes, setNotes] = useState("");
@@ -487,6 +506,7 @@ export default function EditarLivroPage() {
                         type="number"
                         value={currentPage}
                         onChange={(e) => setCurrentPage(e.target.value)}
+                        disabled={status === "LIDO" && !!pages}
                       />
                     </div>
                     <div>
