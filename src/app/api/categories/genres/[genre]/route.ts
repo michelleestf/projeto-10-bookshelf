@@ -1,28 +1,23 @@
 import { NextResponse } from "next/server";
-import { genres as initialGenres } from "@/lib/books";
-
-declare global {
-  var genresArray: string[] | undefined;
-}
-let genres: string[] =
-  globalThis.genresArray || (globalThis.genresArray = [...initialGenres]);
+import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
-  _req: Request,
-  { params }: { params: { genre: string } }
+  req: Request,
+  context: { params: Promise<{ genre: string }> }
 ) {
   try {
-    const genreParam = decodeURIComponent(params.genre);
-    const idx = genres.findIndex(
-      (g) => g.toLowerCase() === genreParam.toLowerCase()
-    );
-    if (idx === -1) {
+    const { genre } = await context.params;
+    const genreParam = decodeURIComponent(genre);
+    const genreRecord = await prisma.genre.findUnique({
+      where: { name: genreParam },
+    });
+    if (!genreRecord) {
       return NextResponse.json(
         { error: "Gênero não encontrado." },
         { status: 404 }
       );
     }
-    genres.splice(idx, 1);
+    await prisma.genre.delete({ where: { name: genreParam } });
     return new NextResponse(null, { status: 204 });
   } catch {
     return NextResponse.json(

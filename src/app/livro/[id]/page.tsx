@@ -150,7 +150,8 @@ export default function BookPage({
             {book.genre && (
               <div className="flex items-center gap-2 text-neutral-800 text-base">
                 <BookOpen size={18} className="text-neutral-400" />
-                <span className="font-semibold">Gênero:</span> {book.genre}
+                <span className="font-semibold">Gênero:</span>{" "}
+                {typeof book.genre === "string" ? book.genre : book.genre?.name}
               </div>
             )}
             {book.pages !== undefined && book.pages !== null && (
@@ -182,6 +183,16 @@ export default function BookPage({
                 </span>
                 <span className="text-xs text-neutral-500">
                   {book.currentPage || 0} / {book.pages} páginas
+                </span>
+                <span className="text-xs text-neutral-500 ">
+                  (
+                  {(() => {
+                    const total = book.pages || 0;
+                    const atual = book.currentPage || 0;
+                    if (!total) return "0%";
+                    return `${Math.round((atual / total) * 100)}%`;
+                  })()}
+                  )
                 </span>
               </div>
               <Progress
@@ -218,8 +229,8 @@ export default function BookPage({
 
           <hr className="my-4" />
           <div className="flex flex-wrap justify-between text-xs text-neutral-500">
-            {book.addedAt && (
-              <span>Adicionado em: {formatDateToBR(book.addedAt)}</span>
+            {book.createdAt && (
+              <span>Adicionado em: {formatDateToBR(book.createdAt)}</span>
             )}
             {book.updatedAt && (
               <span>Última atualização: {formatDateToBR(book.updatedAt)}</span>

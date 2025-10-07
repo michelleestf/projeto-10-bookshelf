@@ -5,7 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// Formata data ISO para dd/mm/yyyy
 export function formatDateToBR(isoDate?: string): string {
   if (!isoDate) return "";
   const date = new Date(isoDate);

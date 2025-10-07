@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
+import { Star, Save, ArrowLeft, Loader2, Pencil, Eye } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -15,8 +16,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
-import type { ReadingStatus, Genre, Book } from "@/lib/books";
-import { genres } from "@/lib/books";
+import type { ReadingStatus } from "@/lib/books";
+import { GenreModal } from "@/components/ui/GenreModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,7 +25,8 @@ export default function AdicionarLivros() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState<Genre | "">("");
+  const [genre, setGenre] = useState<string>("");
+  const [genres, setGenres] = useState<string[]>([]);
   const [year, setYear] = useState("");
   const [isbn, setIsbn] = useState("");
   const [status, setStatus] = useState<ReadingStatus | "">("");
@@ -36,8 +38,22 @@ export default function AdicionarLivros() {
   const [cover, setCover] = useState("");
   const [coverValid, setCoverValid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showGenreModal, setShowGenreModal] = useState(false);
 
   const isValid = Boolean(title.trim() && author.trim() && genre && status);
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+  }, []);
+
+  useEffect(() => {
+    if (cover && cover.match(/^https?:\/\//i)) {
+      setCoverValid(true);
+    } else {
+      setCoverValid(false);
+    }
+  }, [cover]);
 
   async function handleAddBook(e: React.FormEvent) {
     e.preventDefault();
@@ -47,7 +63,20 @@ export default function AdicionarLivros() {
     }
     setLoading(true);
     try {
-      const newBook: Record<string, any> = {};
+      const newBook: {
+        title?: string;
+        author?: string;
+        genre?: string;
+        year?: number;
+        isbn?: string;
+        status?: ReadingStatus;
+        pages?: number;
+        currentPage?: number;
+        rating?: number;
+        synopsis?: string;
+        notes?: string;
+        cover?: string;
+      } = {};
       if (title.trim()) newBook.title = title.trim();
       if (author.trim()) newBook.author = author.trim();
       if (genre) newBook.genre = genre;
@@ -74,7 +103,7 @@ export default function AdicionarLivros() {
       const createdBook = await response.json();
       toast.success("Livro adicionado com sucesso!");
       router.push(`/livro/${createdBook.id}`);
-    } catch (err) {
+    } catch {
       toast.error("Erro ao adicionar livro!");
       setLoading(false);
     }
@@ -163,7 +192,9 @@ export default function AdicionarLivros() {
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <div className="order-2 sm:order-1">
-            <h1 className="text-3xl font-bold mb-2 text-foreground">Adicionar Novo Livro</h1>
+            <h1 className="text-3xl font-bold mb-2 text-foreground">
+              Adicionar Novo Livro
+            </h1>
             <p className="text-neutral-600 text-lg">
               Preencha as informações do livro que deseja adicionar à sua
               biblioteca.
@@ -195,7 +226,9 @@ export default function AdicionarLivros() {
             {progresso}%
           </span>
         </div>
-        <span className="text-sm text-muted-foreground">Campos preenchidos</span>
+        <span className="text-sm text-muted-foreground">
+          Campos preenchidos
+        </span>
       </Card>
 
       {/* Grid principal */}
@@ -214,7 +247,8 @@ export default function AdicionarLivros() {
                   placeholder="Digite o título do livro"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                />text
+                />
+                text
               </div>
               <div>
                 <label className="block text-sm font-medium text-card-foreground">
@@ -226,44 +260,57 @@ export default function AdicionarLivros() {
                   onChange={(e) => setAuthor(e.target.value)}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-card-foreground">
-                  Gênero <span className="text-red-500">*</span>
-                </label>
-                <Select
-                  value={genre}
-                  onValueChange={(v) => setGenre(v as Genre)}
-                >
-                  <SelectTrigger className="w-full cursor-pointer">
-                    <SelectValue placeholder="Selecione o gênero" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {genres.map((g) => (
-                      <SelectItem key={g} value={g}>
-                        {g}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium text-card-foreground">
                   Ano de Publicação
                 </label>
                 <Input
-                  placeholder="2024"
+                  placeholder="Digite o ano de publicação (ex: 2024)"
                   type="number"
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-card-foreground">ISBN</label>
+                <label className="block text-sm font-medium text-card-foreground">
+                  ISBN
+                </label>
                 <Input
-                  placeholder="978-85-123-4567-8"
+                  placeholder="Ex: 978-85-123-4567-8"
                   value={isbn}
                   onChange={(e) => setIsbn(e.target.value)}
                 />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium">
+                Gênero <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select value={genre} onValueChange={setGenre}>
+                    <SelectTrigger className="w-full cursor-pointer">
+                      <SelectValue placeholder="Selecione o gênero" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {genres.map((g) => (
+                        <SelectItem key={g} value={g}>
+                          {g}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Editar gêneros disponíveis"
+                  className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none cursor-pointer"
+                  onClick={() => setShowGenreModal(true)}
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </Card>
@@ -304,7 +351,7 @@ export default function AdicionarLivros() {
                   Total de Páginas
                 </label>
                 <Input
-                  placeholder="0"
+                  placeholder="Total de páginas do livro"
                   type="number"
                   value={pages}
                   onChange={(e) => setPages(e.target.value)}
@@ -315,7 +362,7 @@ export default function AdicionarLivros() {
                   Página Atual
                 </label>
                 <Input
-                  placeholder="0"
+                  placeholder="Página atual da leitura"
                   type="number"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(e.target.value)}
@@ -332,6 +379,14 @@ export default function AdicionarLivros() {
               </div>
             </div>
           </Card>
+          {/* Modal de edição de gêneros */}
+          {showGenreModal && (
+            <GenreModal
+              open={showGenreModal}
+              onClose={() => setShowGenreModal(false)}
+              onGenresChange={setGenres}
+            />
+          )}
 
           {/* Informações Adicionais */}
           <Card>
@@ -340,7 +395,9 @@ export default function AdicionarLivros() {
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-card-foreground">Sinopse</label>
+                <label className="block text-sm font-medium text-card-foreground">
+                  Sinopse
+                </label>
                 <Textarea
                   rows={3}
                   placeholder="Descrição breve do enredo do livro..."
@@ -371,7 +428,9 @@ export default function AdicionarLivros() {
           <Card className="flex flex-col gap-4">
             <h3 className="text-md font-semibold mb-4">Capa do Livro</h3>
             <div>
-              <label className="block text-sm font-medium text-card-foreground">URL da Capa</label>
+              <label className="block text-sm font-medium text-card-foreground">
+                URL da Capa
+              </label>
               <Input
                 placeholder="https://exemplo.com/capa.jpg"
                 value={cover}
@@ -384,9 +443,11 @@ export default function AdicionarLivros() {
               </label>
               <div className="w-full">
                 {coverValid ? (
-                  <img
+                  <Image
                     src={cover}
                     alt="Preview da Capa"
+                    width={400}
+                    height={600}
                     className="w-full object-cover rounded"
                   />
                 ) : (

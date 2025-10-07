@@ -12,9 +12,10 @@ import {
   FileText,
   Plus,
   Library,
-  Book,
   Search,
+  Book as BookIcon,
 } from "lucide-react";
+import type { Book as BookType } from "@/lib/books";
 import { toast } from "react-toastify";
 
 export default function Dashboard() {
@@ -37,7 +38,7 @@ export default function Dashboard() {
         setStats(
           data.stats || { total: 0, lendo: 0, finalizados: 0, paginas: 0 }
         );
-      } catch (e) {
+      } catch {
         setBooks([]);
         setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
         toast.error("Erro ao carregar o dashboard.");
@@ -61,7 +62,9 @@ export default function Dashboard() {
             </span>
             <BookOpen size={20} className="text-muted-foreground" />
           </div>
-          <div className="text-3xl font-bold text-card-foreground">{stats.total}</div>
+          <div className="text-3xl font-bold text-card-foreground">
+            {stats.total}
+          </div>
           <div className="text-xs text-muted-foreground">Em sua biblioteca</div>
         </Card>
         <Card className="flex flex-col gap-2 justify-between shadow-sm">
@@ -71,8 +74,12 @@ export default function Dashboard() {
             </span>
             <Users size={20} className="text-muted-foreground" />
           </div>
-          <div className="text-3xl font-bold text-card-foreground">{stats.lendo}</div>
-          <div className="text-xs text-muted-foreground">Livros em progresso</div>
+          <div className="text-3xl font-bold text-card-foreground">
+            {stats.lendo}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Livros em progresso
+          </div>
         </Card>
         <Card className="text-base font-semibold text-card-foreground">
           <div className="flex items-center justify-between mb-1">
@@ -98,15 +105,17 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
           <Card className="border border-neutral-200 shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4 text-card-foreground">Livros Recentes</h2>
+            <h2 className="text-lg font-semibold mb-4 text-card-foreground">
+              Livros Recentes
+            </h2>
             <div className="flex flex-col gap-3">
               {loading
                 ? Array.from({ length: 3 }).map((_, i) => (
-                  <BookCardSkeleton key={i} />
-                ))
-                : books.map((book: any) => (
-                  <BookCard key={book.id} book={book} />
-                ))}
+                    <BookCardSkeleton key={i} />
+                  ))
+                : (books as BookType[]).map((book) => (
+                    <BookCard key={book.id} book={book} />
+                  ))}
             </div>
           </Card>
         </section>
@@ -132,7 +141,7 @@ export default function Dashboard() {
                 href="/biblioteca?status=LENDO"
                 className="flex flex-col items-center gap-1 bg-card border border-border hover:bg-accent hover:text-accent-foreground text-card-foreground rounded-md py-4 font-medium transition-colors"
               >
-                <Book size={22} />
+                <BookIcon size={22} />
                 Lendo Agora
               </Link>
               <Link

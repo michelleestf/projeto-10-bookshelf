@@ -5,7 +5,7 @@
     "author": "George R. R. Martin",
     "genre": "Fantasia",
     "status": "LIDO",
-    "addedAt": "2025-10-06T00:21:48.808Z",
+    "createdAt": "2025-10-06T00:21:48.808Z",
     "year": 1996,
     "updatedAt": "2025-10-06T02:53:36.299Z",
     "pages": 592,
@@ -22,7 +22,7 @@
     "author": "George R.R. Martin",
     "genre": "Fantasia",
     "status": "LIDO",
-    "addedAt": "2025-10-06T02:14:46.372Z",
+    "createdAt": "2025-10-06T02:14:46.372Z",
     "year": 1998,
     "isbn": "978-8556510792",
     "pages": 648,
@@ -31,5 +31,19 @@
     "synopsis": "Um cometa da cor de fogo e sangue corta os céus. E, da antiga cidadela de Pedra do Dragão às costas áridas de Winterfell, reina o caos.\nEm A fúria dos reis , seis facções disputam o controle de uma terra dividida e o direito de ocupar o Trono de Ferro de Westeros – e estão dispostos a encarar tempestades, levantes e guerras para isso.\nNesta história, irmão trama contra irmão e os mortos se levantam para caminhar pela noite. Aqui, uma princesa se disfarça de menino órfão, um cavaleiro se prepara para encarar uma pérfida feiticeira e bárbaros descem das Montanhas da Lua para saquear os campos.\nEm um contexto de incesto e fratricídio, alquimia e assassinato, a vitória será dos homens e mulheres que possuírem o mais frio aço... e o mais frio coração. Pois, quando se desperta a fúria dos reis, a terra inteira treme.",
     "cover": "https://m.media-amazon.com/images/I/91PglZzF9kL._SL1500_.jpg",
     "updatedAt": "2025-10-06T02:57:33.922Z"
+  },
+  {
+    "id": "1a00643e-ccf3-4ba0-82d1-1bb532fd47c1",
+    "title": "A Tormenta de Espadas: As Crônicas de Gelo e Fogo - Livro 3",
+    "author": "George R. R. Martin",
+    "genre": "Fantasia",
+    "year": 2000,
+    "pages": 848,
+    "synopsis": "O futuro de Westeros está em jogo, e ninguém descansará até que os Sete Reinos tenham explodido em uma verdadeira tormenta de espadas.\nDos cinco pretendentes ao trono, um está morto e outro caiu em desgraça, e ainda assim a guerra continua em toda sua fúria, enquanto alianças são feitas e desfeitas. Joffrey, da Casa Lannister, ocupa o Trono de Ferro, como o instável governante dos Sete Reinos, ao passo que seu rival mais amargo, lorde Stannis, jaz derrotado e enfeitiçado pelas promessas da Mulher Vermelha.\nO jovem Robb, da Casa Stark, ainda comanda o Norte, contudo, e planeja sua batalha contra os Lannister, mesmo que sua irmã seja refém deles em Porto Real. Enquanto isso, Daenerys Targaryen atravessa um continente deixando um rastro de sangue a caminho de Westeros, levando consigo os três únicos dragões existentes em todo o mundo.\nEnquanto forças opostas avançam para uma gigantesca batalha final, um exército de selvagens chega dos confins da civilização. Em seu rastro vem uma horda de terríveis criaturas místicas – os Outros: um batalhão de mortos-vivos cujos corpos são imparáveis",
+    "cover": "https://m.media-amazon.com/images/I/A1nhXznuhpL._SL1500_.jpg",
+    "status": "LENDO",
+    "currentPage": 357,
+    "isbn": "978-8544102947",
+    "createdAt": "2025-10-06T03:44:39.376Z"
   }
 ]

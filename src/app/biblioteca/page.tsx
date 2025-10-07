@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
-import { Book, ReadingStatus } from "@/lib/books";
+import { Suspense, useEffect, useState, useMemo } from "react";
+import { Book } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -16,7 +16,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 
-function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+function debounce<T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number
+) {
   let timer: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timer);
@@ -24,7 +27,7 @@ function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
   };
 }
 
-export default function BibliotecaPage() {
+function BibliotecaContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -46,38 +49,43 @@ export default function BibliotecaPage() {
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
-      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+      .then((data: { name: string }[]) =>
+        setGenres(data.map((g: { name: string }) => g.name))
+      );
   }, []);
 
   const fetchBooks = useMemo(
     () =>
-      debounce(
-        async (
-          searchValue: string,
-          genreValue: string,
-          statusValue: string
-        ) => {
+      debounce((...args) => {
+        const [searchValue, genreValue, statusValue] = args as [
+          string,
+          string,
+          string
+        ];
+        (async () => {
           setLoading(true);
           try {
             const params = new URLSearchParams();
-            if (searchValue) params.set("search", searchValue);
-            if (genreValue) params.set("genre", genreValue);
-            if (statusValue) params.set("status", statusValue);
+            if (typeof searchValue === "string" && searchValue)
+              params.set("search", searchValue);
+            if (typeof genreValue === "string" && genreValue)
+              params.set("genre", genreValue);
+            if (typeof statusValue === "string" && statusValue)
+              params.set("status", statusValue);
             const res = await fetch(`/api/books?${params.toString()}`);
             if (!res.ok) throw new Error("Erro ao buscar livros");
             const data = await res.json();
             setBooks(data);
             toast.success("Biblioteca carregada com sucesso");
-          } catch (err) {
+          } catch {
             setBooks([]);
             toast.error("Erro ao buscar livros, tente novamente mais tarde.");
           } finally {
             setLoading(false);
           }
-        },
-        400
-      ),
-    []
+        })();
+      }, 400),
+    [toast]
   );
 
   useEffect(() => {
@@ -97,14 +105,16 @@ export default function BibliotecaPage() {
           placeholder="Buscar por título ou autor..."
           className="flex-1 text-foreground"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearch(e.target.value)
+          }
         />
         <Select value={genre} onValueChange={setGenre}>
           <SelectTrigger className="w-full sm:w-48 text-foreground">
             <SelectValue placeholder="Filtrar por gênero" />
           </SelectTrigger>
           <SelectContent>
-            {genres.map((g) => (
+            {genres.map((g: string) => (
               <SelectItem key={g} value={g}>
                 {g}
               </SelectItem>
@@ -148,7 +158,7 @@ export default function BibliotecaPage() {
             Nenhum livro encontrado com os filtros atuais.
           </div>
         ) : (
-          books.map((book) => (
+          books.map((book: Book) => (
             <BookCard
               key={book.id}
               book={book}
@@ -160,5 +170,13 @@ export default function BibliotecaPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function BibliotecaPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <BibliotecaContent />
+    </Suspense>
   );
 }
