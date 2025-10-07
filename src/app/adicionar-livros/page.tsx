@@ -384,7 +384,21 @@ export default function AdicionarLivros() {
                   placeholder="Página atual da leitura"
                   type="number"
                   value={currentPage}
-                  onChange={(e) => setCurrentPage(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const totalPagesValue = pages ? Number(pages) : undefined;
+                    if (
+                      totalPagesValue !== undefined &&
+                      value !== "" &&
+                      Number(value) > totalPagesValue
+                    ) {
+                      toast.error(
+                        "A página atual não pode ser maior que o total de páginas!"
+                      );
+                      return;
+                    }
+                    setCurrentPage(value);
+                  }}
                   disabled={status === "LIDO" && !!pages}
                 />
               </div>
