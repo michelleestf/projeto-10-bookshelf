@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -17,6 +18,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
 import type { ReadingStatus, Genre, Book } from "@/lib/books";
 import { genres } from "@/lib/books";
+import { GenreModal } from "@/components/ui/GenreModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -24,7 +26,8 @@ export default function AdicionarLivros() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
-  const [genre, setGenre] = useState<Genre | "">("");
+  const [genre, setGenre] = useState<string>("");
+  const [genres, setGenres] = useState<string[]>([]);
   const [year, setYear] = useState("");
   const [isbn, setIsbn] = useState("");
   const [status, setStatus] = useState<ReadingStatus | "">("");
@@ -36,8 +39,22 @@ export default function AdicionarLivros() {
   const [cover, setCover] = useState("");
   const [coverValid, setCoverValid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showGenreModal, setShowGenreModal] = useState(false);
 
   const isValid = Boolean(title.trim() && author.trim() && genre && status);
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((res) => res.json())
+      .then((data) => setGenres(data.map((g: { name: string }) => g.name)));
+  }, []);
+
+  useEffect(() => {
+    if (cover && cover.match(/^https?:\/\//i)) {
+      setCoverValid(true);
+    } else {
+      setCoverValid(false);
+    }
+  }, [cover]);
 
   async function handleAddBook(e: React.FormEvent) {
     e.preventDefault();
@@ -226,32 +243,14 @@ export default function AdicionarLivros() {
                   onChange={(e) => setAuthor(e.target.value)}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium">
-                  Gênero <span className="text-red-500">*</span>
-                </label>
-                <Select
-                  value={genre}
-                  onValueChange={(v) => setGenre(v as Genre)}
-                >
-                  <SelectTrigger className="w-full cursor-pointer">
-                    <SelectValue placeholder="Selecione o gênero" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {genres.map((g) => (
-                      <SelectItem key={g} value={g}>
-                        {g}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div>
                 <label className="block text-sm font-medium">
                   Ano de Publicação
                 </label>
                 <Input
-                  placeholder="2024"
+                  placeholder="Digite o ano de publicação (ex: 2024)"
                   type="number"
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
@@ -260,10 +259,39 @@ export default function AdicionarLivros() {
               <div>
                 <label className="block text-sm font-medium">ISBN</label>
                 <Input
-                  placeholder="978-85-123-4567-8"
+                  placeholder="Ex: 978-85-123-4567-8"
                   value={isbn}
                   onChange={(e) => setIsbn(e.target.value)}
                 />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium">
+                Gênero <span className="text-red-500">*</span>
+              </label>
+              <div className="flex gap-2 items-center">
+                <div className="flex-1">
+                  <Select value={genre} onValueChange={setGenre}>
+                    <SelectTrigger className="w-full cursor-pointer">
+                      <SelectValue placeholder="Selecione o gênero" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {genres.map((g) => (
+                        <SelectItem key={g} value={g}>
+                          {g}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <button
+                  type="button"
+                  aria-label="Editar gêneros disponíveis"
+                  className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none cursor-pointer"
+                  onClick={() => setShowGenreModal(true)}
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </Card>
@@ -304,7 +332,7 @@ export default function AdicionarLivros() {
                   Total de Páginas
                 </label>
                 <Input
-                  placeholder="0"
+                  placeholder="Total de páginas do livro"
                   type="number"
                   value={pages}
                   onChange={(e) => setPages(e.target.value)}
@@ -315,7 +343,7 @@ export default function AdicionarLivros() {
                   Página Atual
                 </label>
                 <Input
-                  placeholder="0"
+                  placeholder="Página atual da leitura"
                   type="number"
                   value={currentPage}
                   onChange={(e) => setCurrentPage(e.target.value)}
@@ -332,6 +360,14 @@ export default function AdicionarLivros() {
               </div>
             </div>
           </Card>
+          {/* Modal de edição de gêneros */}
+          {showGenreModal && (
+            <GenreModal
+              open={showGenreModal}
+              onClose={() => setShowGenreModal(false)}
+              onGenresChange={setGenres}
+            />
+          )}
 
           {/* Informações Adicionais */}
           <Card>
