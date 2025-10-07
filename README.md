@@ -1,6 +1,6 @@
 # 📚 BookShelf
 
-Uma aplicação web moderna para **gerenciamento de biblioteca pessoal**, permitindo catalogar, organizar e acompanhar o progresso de leitura de livros.
+Aplicação web moderna para **gerenciamento de biblioteca pessoal**. Permite cadastrar, organizar, editar, excluir e acompanhar o progresso de leitura dos seus livros.
 
 ## Tecnologias Utilizadas
 
@@ -8,13 +8,16 @@ Uma aplicação web moderna para **gerenciamento de biblioteca pessoal**, permit
 - **React 19**
 - **TypeScript**
 - **Tailwind CSS**
-- **shadcn/ui** (biblioteca de componentes)
+- **shadcn/ui**
+- **Prisma** (ORM)
+- **PostgreSQL** (Railway/Vercel)
 
 ---
 
 ## Funcionalidades
 
 ### Dashboard
+
 - Estatísticas gerais da biblioteca:
   - Total de livros cadastrados
   - Livros em leitura
@@ -24,33 +27,38 @@ Uma aplicação web moderna para **gerenciamento de biblioteca pessoal**, permit
 - Layout **responsivo** e atrativo
 
 ### Biblioteca (Listagem de Livros)
+
 - Exibição em cards com:
-    Capa (com fallback padrão)
-    Título, autor e ano
-    Gênero (badge)
-    Avaliação por estrelas ⭐
+  Capa (com fallback padrão)
+  Título, autor e ano
+  Gênero (badge)
+  Avaliação por estrelas ⭐
 - Busca por título/autor
 - Filtros por gênero literário
 - Ações: **visualizar, editar e excluir**
 
 ### Adicionar Novo Livro
+
 - Formulário completo com:
-    **Obrigatórios:** título, autor
-    **Opcionais:** páginas, status de leitura, ISBN, URL da capa, gênero, avaliação e notas pessoais
+  **Obrigatórios:** título, autor, gênero, status de leitura
+  **Opcionais:** páginas, ISBN, URL da capa, avaliação e notas pessoais
 - Preview em tempo real da capa
 - Barra de progresso do preenchimento
 - Validação e feedback visual (sucesso/erro)
 
 ### Visualizar Livro
+
 - Página individual com todas as informações
 - Sinopse detalhada
 - Botões de editar e excluir
 
 ### Editar Livro
+
 - Formulário pré-preenchido
 - Atualização em tempo real
 
 ### Excluir Livro
+
 - Confirmação antes da exclusão
 - Feedback claro para o usuário
 
@@ -74,12 +82,6 @@ Uma aplicação web moderna para **gerenciamento de biblioteca pessoal**, permit
 
 ---
 
-## Dados Iniciais
-
-A aplicação inicia com **5 livros pré-cadastrados**, de diferentes gêneros, anos e avaliações, incluindo sinopses completas e URLs de capa válidas.
-
----
-
 ## Como Rodar o Projeto
 
 ```bash
@@ -87,10 +89,14 @@ A aplicação inicia com **5 livros pré-cadastrados**, de diferentes gêneros, 
 git clone https://github.com/michelleestf/projeto-10-bookshelf.git
 
 # Entre no diretório
-cd bookshelf-app
+cd projeto-10-bookshelf
 
 # Instale as dependências
 npm install
+
+# Configure as variáveis de ambiente (se necessário)
+# Exemplo: .env.local
+# DATABASE_URL=postgresql://usuario:senha@host:porta/db
 
 # Rode o projeto em ambiente de desenvolvimento
 npm run dev
