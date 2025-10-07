@@ -576,7 +576,7 @@ export default function EditarLivroPage() {
                     className={`w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed${
                       updating ? " opacity-80 pointer-events-none" : ""
                     }`}
-                    disabled={!isValid || !isChanged}
+                    disabled={!isValid || !isChanged || updating}
                     type="submit"
                   >
                     {updating ? (
