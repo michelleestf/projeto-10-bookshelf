@@ -137,7 +137,7 @@ export default function EditarLivroPage() {
         title: title.trim(),
         author: author.trim(),
         genre,
-        year: year ? Number(year) : undefined,
+        year: year.trim() && !isNaN(Number(year)) ? Number(year) : undefined,
         isbn: isbn || undefined,
         status: status || undefined,
         pages: totalPagesValue,
@@ -165,7 +165,6 @@ export default function EditarLivroPage() {
       }
     } catch {
       toast.error("Erro ao atualizar livro!");
-    } finally {
       setUpdating(false);
     }
   }
@@ -571,8 +570,10 @@ export default function EditarLivroPage() {
                 {/* Botões */}
                 <div className="flex flex-col gap-2">
                   <Button
-                    className="w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-                    disabled={updating || !isValid || !isChanged}
+                    className={`w-full flex items-center justify-center gap-2 cursor-pointer disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed${
+                      updating ? " opacity-80 pointer-events-none" : ""
+                    }`}
+                    disabled={!isValid || !isChanged}
                     type="submit"
                   >
                     {updating ? (
@@ -580,7 +581,7 @@ export default function EditarLivroPage() {
                     ) : (
                       <Save className="h-5 w-5" />
                     )}
-                    Salvar Alterações
+                    {updating ? "Salvando..." : "Salvar Alterações"}
                   </Button>
                   <Button
                     variant="outline"

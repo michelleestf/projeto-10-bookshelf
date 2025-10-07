@@ -30,6 +30,8 @@ model Book {
   status      ReadingStatus @default(QUERO_LER)
   currentPage Int?
   pages       Int?
+  year        Int?
+  rating      Int?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   isbn        String?

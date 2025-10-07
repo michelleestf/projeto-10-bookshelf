@@ -62,11 +62,24 @@ export async function getBookById(id: string) {
 export async function createBook(
   data: Omit<Book, "id" | "createdAt" | "updatedAt"> & { genre: string }
 ) {
+  // Monta data apenas com campos válidos para o modelo Book
+  const bookData: any = {};
+  if (data.title) bookData.title = data.title;
+  if (data.author) bookData.author = data.author;
+  if (data.status) bookData.status = data.status;
+  if (data.pages !== undefined) bookData.pages = data.pages;
+  if (data.currentPage !== undefined) bookData.currentPage = data.currentPage;
+  if (data.year !== undefined) bookData.year = data.year;
+  if (data.rating !== undefined) bookData.rating = data.rating;
+  if (data.synopsis) bookData.synopsis = data.synopsis;
+  if (data.notes) bookData.notes = data.notes;
+  if (data.cover) bookData.cover = data.cover;
+  if (data.isbn) bookData.isbn = data.isbn;
+  if (data.genre) {
+    bookData.genre = { connect: { name: data.genre } };
+  }
   return prisma.book.create({
-    data: {
-      ...data,
-      genre: { connect: { name: data.genre } },
-    },
+    data: bookData,
     include: { genre: true },
   });
 }
@@ -75,11 +88,21 @@ export async function updateBook(
   id: string,
   data: Partial<Book> & { genre?: string }
 ) {
-  const updateData: any = { ...data };
+  // Monta updateData apenas com campos válidos para o modelo Book
+  const updateData: any = {};
+  if (data.title) updateData.title = data.title;
+  if (data.author) updateData.author = data.author;
+  if (data.status) updateData.status = data.status;
+  if (data.pages !== undefined) updateData.pages = data.pages;
+  if (data.currentPage !== undefined) updateData.currentPage = data.currentPage;
+  if (data.year !== undefined) updateData.year = data.year;
+  if (data.rating !== undefined) updateData.rating = data.rating;
+  if (data.synopsis) updateData.synopsis = data.synopsis;
+  if (data.notes) updateData.notes = data.notes;
+  if (data.cover) updateData.cover = data.cover;
+  if (data.isbn) updateData.isbn = data.isbn;
   if (data.genre) {
     updateData.genre = { connect: { name: data.genre } };
-    delete updateData.genre;
-    updateData.genreId = undefined;
   }
   return prisma.book.update({
     where: { id },
