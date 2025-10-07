@@ -2,15 +2,16 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function DELETE(
-  _req: Request,
-  { params }: { params: { genre: string } }
+  req: Request,
+  context: { params: Promise<{ genre: string }> }
 ) {
   try {
-    const genreParam = decodeURIComponent(params.genre);
-    const genre = await prisma.genre.findUnique({
+    const { genre } = await context.params;
+    const genreParam = decodeURIComponent(genre);
+    const genreRecord = await prisma.genre.findUnique({
       where: { name: genreParam },
     });
-    if (!genre) {
+    if (!genreRecord) {
       return NextResponse.json(
         { error: "Gênero não encontrado." },
         { status: 404 }

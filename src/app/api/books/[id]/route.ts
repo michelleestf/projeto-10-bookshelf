@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { getBookById, updateBook, deleteBook } from "@/lib/books";
 
 export async function GET(
-  _req: Request,
-  { params }: { params: { id: string } }
+  req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const book = await getBookById(params.id);
+    const { id } = await context.params;
+    const book = await getBookById(id);
     if (!book) {
       return NextResponse.json(
         { error: "Livro não encontrado." },
@@ -24,11 +25,12 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const data = await req.json();
-    const book = await updateBook(params.id, data);
+    const { id } = await context.params;
+    const book = await updateBook(id, data);
     return NextResponse.json(book, { status: 200 });
   } catch (e: unknown) {
     const error = e as { code?: string };
@@ -46,11 +48,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: Request,
-  { params }: { params: { id: string } }
+  req: Request,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    await deleteBook(params.id);
+    const { id } = await context.params;
+    await deleteBook(id);
     return new NextResponse(null, { status: 204 });
   } catch (e) {
     const error = e as { code?: string };

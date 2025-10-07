@@ -1,8 +1,5 @@
 import { prisma } from "./prisma";
-import {
-  BookCreateInput,
-  GenreCreateNestedOneWithoutBooksInput,
-} from "./prisma-types";
+import { BookCreateInput } from "./prisma-types";
 
 export const genres = [
   "Literatura Brasileira",
