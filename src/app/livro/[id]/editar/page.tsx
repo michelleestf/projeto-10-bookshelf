@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
-import type { ReadingStatus, Genre, Book } from "@/lib/books";
+import type { ReadingStatus, Book } from "@/lib/books";
 import { toast } from "react-toastify";
 import { ArrowLeft, Save, Star, Loader2, Pencil } from "lucide-react";
 import { GenreModal } from "@/components/ui/GenreModal";

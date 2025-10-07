@@ -16,8 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Card } from "@/components/ui/Card";
-import type { ReadingStatus, Genre, Book } from "@/lib/books";
-import { genres } from "@/lib/books";
+import type { ReadingStatus } from "@/lib/books";
 import { GenreModal } from "@/components/ui/GenreModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -104,7 +103,7 @@ export default function AdicionarLivros() {
       const createdBook = await response.json();
       toast.success("Livro adicionado com sucesso!");
       router.push(`/livro/${createdBook.id}`);
-    } catch (err) {
+    } catch {
       toast.error("Erro ao adicionar livro!");
       setLoading(false);
     }

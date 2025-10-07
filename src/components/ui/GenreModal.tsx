@@ -35,7 +35,8 @@ export const GenreModal: React.FC<GenreModalProps> = ({
     import("@/lib/books").then((mod) => {
       setAllGenreSuggestions(mod.genres);
     });
-  }, [onGenresChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function fetchGenres() {
     try {

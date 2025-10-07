@@ -37,7 +37,7 @@ export default function Dashboard() {
         setStats(
           data.stats || { total: 0, lendo: 0, finalizados: 0, paginas: 0 }
         );
-      } catch (e) {
+      } catch {
         setBooks([]);
         setStats({ total: 0, lendo: 0, finalizados: 0, paginas: 0 });
         toast.error("Erro ao carregar o dashboard.");
@@ -104,7 +104,7 @@ export default function Dashboard() {
                 ? Array.from({ length: 3 }).map((_, i) => (
                     <BookCardSkeleton key={i} />
                   ))
-                : books.map((book: any) => (
+                : (books as any[]).map((book) => (
                     <BookCard key={book.id} book={book} />
                   ))}
             </div>

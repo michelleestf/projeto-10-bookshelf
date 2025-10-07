@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json(books, { status: 200 });
-  } catch (e) {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao buscar livros." },
       { status: 500 }
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     const data = await request.json();
     const book = await createBook(data);
     return NextResponse.json(book, { status: 201 });
-  } catch (e) {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao criar livro." },
       { status: 500 }

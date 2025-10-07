@@ -30,8 +30,9 @@ export async function PUT(
     const data = await req.json();
     const book = await updateBook(params.id, data);
     return NextResponse.json(book, { status: 200 });
-  } catch (e: any) {
-    if (e.code === "P2025") {
+  } catch (e: unknown) {
+    const error = e as { code?: string };
+    if (error.code === "P2025") {
       return NextResponse.json(
         { error: "Livro não encontrado." },
         { status: 404 }
@@ -51,8 +52,9 @@ export async function DELETE(
   try {
     await deleteBook(params.id);
     return new NextResponse(null, { status: 204 });
-  } catch (e: any) {
-    if (e.code === "P2025") {
+  } catch (e) {
+    const error = e as { code?: string };
+    if (error.code === "P2025") {
       return NextResponse.json(
         { error: "Livro não encontrado." },
         { status: 404 }

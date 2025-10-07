@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
-import { Book, ReadingStatus } from "@/lib/books";
+import { Book } from "@/lib/books";
 import { BookCard } from "@/components/ui/BookCard";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -72,7 +72,7 @@ export default function BibliotecaPage() {
             const data = await res.json();
             setBooks(data);
             toast.success("Biblioteca carregada com sucesso");
-          } catch (err) {
+          } catch {
             setBooks([]);
             toast.error("Erro ao buscar livros, tente novamente mais tarde.");
           } finally {

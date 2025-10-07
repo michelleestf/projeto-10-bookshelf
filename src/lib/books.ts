@@ -62,8 +62,8 @@ export async function createBook(
   data: Omit<Book, "id" | "createdAt" | "updatedAt"> & { genre: string }
 ) {
   const bookData: any = {};
-  bookData.title = data.title;
-  bookData.author = data.author;
+  bookData.title = data.title!;
+  bookData.author = data.author!;
   if (data.status) bookData.status = data.status;
   if (data.pages !== undefined) bookData.pages = data.pages;
   if (data.currentPage !== undefined) bookData.currentPage = data.currentPage;

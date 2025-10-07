@@ -11,9 +11,6 @@ import { Progress } from "@/components/ui/progress";
 
 interface BookCardProps {
   book: Book;
-  onView?: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
   onDeleted?: () => void;
   showDetails?: boolean;
   showDeleteButton?: boolean;
@@ -28,13 +25,10 @@ const statusMap = {
 
 export function BookCard({
   book,
-  onView,
-  onEdit,
-  onDelete,
   onDeleted,
   showDetails,
   showDeleteButton,
-}: BookCardProps) {
+}: Omit<BookCardProps, "onView" | "onEdit" | "onDelete">) {
   const [showDelete, setShowDelete] = useState(false);
   const progresso =
     book.status === "LENDO" && book.pages && book.currentPage
