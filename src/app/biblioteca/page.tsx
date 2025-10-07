@@ -16,7 +16,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
 
-function debounce<T extends (...args: any[]) => void>(fn: T, delay: number) {
+function debounce<T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number
+) {
   let timer: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timer);
@@ -51,12 +54,13 @@ export default function BibliotecaPage() {
 
   const fetchBooks = useMemo(
     () =>
-      debounce(
-        async (
-          searchValue: string,
-          genreValue: string,
-          statusValue: string
-        ) => {
+      debounce((...args: unknown[]) => {
+        const [searchValue, genreValue, statusValue] = args as [
+          string,
+          string,
+          string
+        ];
+        (async () => {
           setLoading(true);
           try {
             const params = new URLSearchParams();
@@ -74,9 +78,8 @@ export default function BibliotecaPage() {
           } finally {
             setLoading(false);
           }
-        },
-        400
-      ),
+        })();
+      }, 400),
     []
   );
 

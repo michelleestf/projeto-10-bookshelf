@@ -1,4 +1,3 @@
-// Prisma Client singleton for Next.js
 import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as {

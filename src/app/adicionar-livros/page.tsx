@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Star, Eye, Save, ArrowLeft, Loader2 } from "lucide-react";
-import { Pencil } from "lucide-react";
+import { Star, Save, ArrowLeft, Loader2, Pencil, Eye } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -64,7 +64,20 @@ export default function AdicionarLivros() {
     }
     setLoading(true);
     try {
-      const newBook: Record<string, any> = {};
+      const newBook: {
+        title?: string;
+        author?: string;
+        genre?: string;
+        year?: number;
+        isbn?: string;
+        status?: ReadingStatus;
+        pages?: number;
+        currentPage?: number;
+        rating?: number;
+        synopsis?: string;
+        notes?: string;
+        cover?: string;
+      } = {};
       if (title.trim()) newBook.title = title.trim();
       if (author.trim()) newBook.author = author.trim();
       if (genre) newBook.genre = genre;
@@ -420,9 +433,11 @@ export default function AdicionarLivros() {
               </label>
               <div className="w-full">
                 {coverValid ? (
-                  <img
+                  <Image
                     src={cover}
                     alt="Preview da Capa"
+                    width={400}
+                    height={600}
                     className="w-full object-cover rounded"
                   />
                 ) : (

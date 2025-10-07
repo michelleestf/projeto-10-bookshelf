@@ -32,11 +32,10 @@ export const GenreModal: React.FC<GenreModalProps> = ({
 
   useEffect(() => {
     fetchGenres();
-    // Optionally, add static suggestions from books.ts
     import("@/lib/books").then((mod) => {
       setAllGenreSuggestions(mod.genres);
     });
-  }, []);
+  }, [onGenresChange]);
 
   async function fetchGenres() {
     try {

@@ -44,7 +44,6 @@ export interface Book {
   updatedAt?: string;
 }
 
-// Funções CRUD para livros
 export async function getAllBooks() {
   return prisma.book.findMany({
     include: { genre: true },
@@ -62,10 +61,9 @@ export async function getBookById(id: string) {
 export async function createBook(
   data: Omit<Book, "id" | "createdAt" | "updatedAt"> & { genre: string }
 ) {
-  // Monta data apenas com campos válidos para o modelo Book
   const bookData: any = {};
-  if (data.title) bookData.title = data.title;
-  if (data.author) bookData.author = data.author;
+  bookData.title = data.title;
+  bookData.author = data.author;
   if (data.status) bookData.status = data.status;
   if (data.pages !== undefined) bookData.pages = data.pages;
   if (data.currentPage !== undefined) bookData.currentPage = data.currentPage;
@@ -88,7 +86,6 @@ export async function updateBook(
   id: string,
   data: Partial<Book> & { genre?: string }
 ) {
-  // Monta updateData apenas com campos válidos para o modelo Book
   const updateData: any = {};
   if (data.title) updateData.title = data.title;
   if (data.author) updateData.author = data.author;
@@ -115,7 +112,6 @@ export async function deleteBook(id: string) {
   return prisma.book.delete({ where: { id } });
 }
 
-// Funções para gêneros
 export async function getAllGenres() {
   return prisma.genre.findMany({ orderBy: { name: "asc" } });
 }

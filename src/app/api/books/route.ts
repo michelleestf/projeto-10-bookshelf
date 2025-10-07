@@ -36,7 +36,6 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const data = await request.json();
-    // Espera-se que data.genre seja o nome do gênero
     const book = await createBook(data);
     return NextResponse.json(book, { status: 201 });
   } catch (e) {

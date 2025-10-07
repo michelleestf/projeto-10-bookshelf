@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
 import { useRouter, useParams } from "next/navigation";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/textarea";
@@ -554,9 +555,11 @@ export default function EditarLivroPage() {
                     </label>
                     <div className="w-full">
                       {coverValid ? (
-                        <img
+                        <Image
                           src={cover}
                           alt="Preview da Capa"
+                          width={400}
+                          height={600}
                           className="w-full object-cover rounded"
                         />
                       ) : (

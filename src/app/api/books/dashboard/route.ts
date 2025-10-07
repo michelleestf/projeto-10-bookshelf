@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  // Busca todos os livros
   const books = await prisma.book.findMany({
     include: { genre: true },
     orderBy: { createdAt: "desc" },
