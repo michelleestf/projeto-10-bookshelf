@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import type { Book } from "@/lib/books";
 import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
 import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
@@ -12,9 +13,10 @@ import {
   FileText,
   Plus,
   Library,
-  Book,
   Search,
+  Book as BookIcon,
 } from "lucide-react";
+import type { Book as BookType } from "@/lib/books";
 import { toast } from "react-toastify";
 
 export default function Dashboard() {
@@ -104,7 +106,7 @@ export default function Dashboard() {
                 ? Array.from({ length: 3 }).map((_, i) => (
                     <BookCardSkeleton key={i} />
                   ))
-                : (books as any[]).map((book) => (
+                : (books as BookType[]).map((book) => (
                     <BookCard key={book.id} book={book} />
                   ))}
             </div>
@@ -132,7 +134,7 @@ export default function Dashboard() {
                 href="/biblioteca?status=LENDO"
                 className="flex flex-col items-center gap-1 bg-white border border-neutral-200 hover:bg-neutral-100 text-black rounded-md py-4 font-medium transition"
               >
-                <Book size={22} />
+                <BookIcon size={22} />
                 Lendo Agora
               </Link>
               <Link

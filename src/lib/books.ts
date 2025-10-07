@@ -61,18 +61,19 @@ export async function getBookById(id: string) {
 export async function createBook(
   data: Omit<Book, "id" | "createdAt" | "updatedAt"> & { genre: string }
 ) {
-  const bookData: any = {};
-  bookData.title = data.title!;
-  bookData.author = data.author!;
-  if (data.status) bookData.status = data.status;
-  if (data.pages !== undefined) bookData.pages = data.pages;
-  if (data.currentPage !== undefined) bookData.currentPage = data.currentPage;
-  if (data.year !== undefined) bookData.year = data.year;
-  if (data.rating !== undefined) bookData.rating = data.rating;
-  if (data.synopsis) bookData.synopsis = data.synopsis;
-  if (data.notes) bookData.notes = data.notes;
-  if (data.cover) bookData.cover = data.cover;
-  if (data.isbn) bookData.isbn = data.isbn;
+  const bookData: any = {
+    title: data.title!,
+    author: data.author!,
+    status: data.status,
+    pages: data.pages,
+    currentPage: data.currentPage,
+    year: data.year,
+    rating: data.rating,
+    synopsis: data.synopsis,
+    notes: data.notes,
+    cover: data.cover,
+    isbn: data.isbn,
+  };
   if (data.genre) {
     bookData.genre = { connect: { name: data.genre } };
   }
@@ -86,21 +87,33 @@ export async function updateBook(
   id: string,
   data: Partial<Book> & { genre?: string }
 ) {
-  const updateData: any = {};
-  if (data.title) updateData.title = data.title;
-  if (data.author) updateData.author = data.author;
-  if (data.status) updateData.status = data.status;
-  if (data.pages !== undefined) updateData.pages = data.pages;
-  if (data.currentPage !== undefined) updateData.currentPage = data.currentPage;
-  if (data.year !== undefined) updateData.year = data.year;
-  if (data.rating !== undefined) updateData.rating = data.rating;
-  if (data.synopsis) updateData.synopsis = data.synopsis;
-  if (data.notes) updateData.notes = data.notes;
-  if (data.cover) updateData.cover = data.cover;
-  if (data.isbn) updateData.isbn = data.isbn;
-  if (data.genre) {
-    updateData.genre = { connect: { name: data.genre } };
-  }
+  const updateData: {
+    title?: string;
+    author?: string;
+    status?: ReadingStatus;
+    pages?: number;
+    currentPage?: number;
+    year?: number;
+    rating?: number;
+    synopsis?: string;
+    notes?: string;
+    cover?: string;
+    isbn?: string;
+    genre?: { connect: { name: string } };
+  } = {
+    ...(data.title && { title: data.title }),
+    ...(data.author && { author: data.author }),
+    ...(data.status && { status: data.status }),
+    ...(data.pages !== undefined && { pages: data.pages }),
+    ...(data.currentPage !== undefined && { currentPage: data.currentPage }),
+    ...(data.year !== undefined && { year: data.year }),
+    ...(data.rating !== undefined && { rating: data.rating }),
+    ...(data.synopsis && { synopsis: data.synopsis }),
+    ...(data.notes && { notes: data.notes }),
+    ...(data.cover && { cover: data.cover }),
+    ...(data.isbn && { isbn: data.isbn }),
+    ...(data.genre && { genre: { connect: { name: data.genre } } }),
+  };
   return prisma.book.update({
     where: { id },
     data: updateData,

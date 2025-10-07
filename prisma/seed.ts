@@ -5,19 +5,16 @@ import path from "path";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Lê o JSON antigo
   const jsonPath = path.join(__dirname, "../src/lib/books-data.json");
   const raw = await fs.readFile(jsonPath, "utf-8");
   const books: any[] = JSON.parse(raw);
 
-  // Gêneros únicos
   const genresSet = new Set<string>();
   books.forEach((b) => {
     if (b.genre) genresSet.add(b.genre);
   });
   const genres = Array.from(genresSet);
 
-  // Cria gêneros
   const genreMap: Record<string, string> = {};
   for (const name of genres) {
     const genre = await prisma.genre.upsert({
@@ -28,7 +25,6 @@ async function main() {
     genreMap[name] = genre.id;
   }
 
-  // Cria livros
   for (const b of books) {
     await prisma.book.upsert({
       where: { id: b.id },
@@ -54,8 +50,6 @@ async function main() {
       },
     });
   }
-
-  console.log("Seed concluído!");
 }
 
 main()
