@@ -17,11 +17,13 @@ import { Card } from "@/components/ui/Card";
 import type { ReadingStatus, Genre, Book } from "@/lib/books";
 import { toast } from "react-toastify";
 import { ArrowLeft, Save, Star, Loader2, Pencil } from "lucide-react";
+import { GenreModal } from "@/components/ui/GenreModal";
 import NotFound from "@/components/ui/NotFound";
 import { EditarLivroSkeleton } from "@/components/ui/EditarLivroSkeleton";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function EditarLivroPage() {
+  const [showGenreModal, setShowGenreModal] = useState(false);
   const router = useRouter();
   const params = useParams();
   const { id } = params;
@@ -328,7 +330,7 @@ export default function EditarLivroPage() {
                         Ano de Publicação
                       </label>
                       <Input
-                        placeholder="2024"
+                        placeholder="Digite o ano de publicação (ex: 2024)"
                         type="number"
                         value={year}
                         onChange={(e) => setYear(e.target.value)}
@@ -337,7 +339,7 @@ export default function EditarLivroPage() {
                     <div>
                       <label className="block text-sm font-medium">ISBN</label>
                       <Input
-                        placeholder="978-85-123-4567-8"
+                        placeholder="Ex: 978-85-123-4567-8"
                         value={isbn}
                         onChange={(e) => setIsbn(e.target.value)}
                       />
@@ -366,8 +368,8 @@ export default function EditarLivroPage() {
                       <button
                         type="button"
                         aria-label="Editar gêneros disponíveis"
-                        className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none"
-                        onClick={() => toast.info("Em breve!")}
+                        className="ml-1 p-2 rounded hover:bg-neutral-200 transition-colors border border-neutral-200 text-neutral-600 hover:text-black focus:outline-none cursor-pointer"
+                        onClick={() => setShowGenreModal(true)}
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -465,7 +467,7 @@ export default function EditarLivroPage() {
                         Total de Páginas
                       </label>
                       <Input
-                        placeholder="300"
+                        placeholder="Total de páginas do livro"
                         type="number"
                         value={pages}
                         onChange={(e) => setPages(e.target.value)}
@@ -476,7 +478,7 @@ export default function EditarLivroPage() {
                         Página Atual
                       </label>
                       <Input
-                        placeholder="150"
+                        placeholder="Página atual da leitura"
                         type="number"
                         value={currentPage}
                         onChange={(e) => setCurrentPage(e.target.value)}
@@ -589,6 +591,13 @@ export default function EditarLivroPage() {
             </div>
           </form>
         </>
+      )}
+      {showGenreModal && (
+        <GenreModal
+          open={showGenreModal}
+          onClose={() => setShowGenreModal(false)}
+          onGenresChange={setGenres}
+        />
       )}
     </div>
   );

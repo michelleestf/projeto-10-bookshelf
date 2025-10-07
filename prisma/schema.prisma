@@ -1,6 +1,3 @@
-// Prisma schema for Bookshelf migration from JSON to SQLite
-// Status: QUERO_LER (default), LENDO, LIDO, PAUSADO, ABANDONADO
-
 generator client {
   provider = "prisma-client-js"
 }
