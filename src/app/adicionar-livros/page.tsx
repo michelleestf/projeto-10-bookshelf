@@ -222,7 +222,7 @@ export default function AdicionarLivros() {
         </p>
         <div className="flex items-center gap-4">
           <Progress value={progresso} className="h-2.5 w-full" />
-          <span className="text-sm font-medium text-muted-foreground">
+          <span className="text-sm font-medium text-accent-foreground">
             {progresso}%
           </span>
         </div>

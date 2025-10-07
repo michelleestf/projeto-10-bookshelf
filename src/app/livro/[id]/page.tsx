@@ -96,7 +96,7 @@ export default function BookPage({
           <ArrowLeft size={18} /> Voltar à Biblioteca
         </Link>
       </div>
-      <div className="bg-white rounded-2xl border p-6 flex flex-col md:flex-row gap-8">
+      <div className="rounded-2xl border border-border bg-card text-card-foreground p-6 flex flex-col md:flex-row gap-8">
         {/* Capa do livro */}
         <div className="w-full md:w-[260px] flex flex-col items-center">
           <Image
@@ -106,13 +106,15 @@ export default function BookPage({
             alt={book.title}
             width={260}
             height={390}
-            className="rounded-lg object-cover border w-[260px]"
+            className="rounded-lg object-cover border border-border w-[260px]"
           />
         </div>
         {/* Informações do livro */}
         <div className="flex-1 flex flex-col">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-1">
-            <h2 className="text-3xl font-bold">{book.title}</h2>
+            <h2 className="text-3xl font-bold text-card-foreground">
+              {book.title}
+            </h2>
             {book.status && (
               <Badge
                 color={statusMap[book.status].color}
@@ -122,7 +124,9 @@ export default function BookPage({
               </Badge>
             )}
           </div>
-          <p className="text-neutral-600 text-lg mb-4">por {book.author}</p>
+          <p className="text-muted-foreground text-lg mb-4">
+            por {book.author}
+          </p>
 
           {/* Avaliação */}
           {typeof book.rating === "number" && book.rating > 0 && (
@@ -139,36 +143,36 @@ export default function BookPage({
                   ★
                 </span>
               ))}
-              <span className="ml-2 text-neutral-600 text-base font-medium">
+              <span className="ml-2 text-muted-foreground text-base font-medium">
                 ({book.rating}/5)
               </span>
             </div>
           )}
 
           {/* Grid de informações principais com ícones */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 mb-4 text-card-foreground">
             {book.genre && (
-              <div className="flex items-center gap-2 text-neutral-800 text-base">
-                <BookOpen size={18} className="text-neutral-400" />
+              <div className="flex items-center gap-2 text-card-foreground text-base">
+                <BookOpen size={18} className="text-muted-foreground" />
                 <span className="font-semibold">Gênero:</span>{" "}
                 {typeof book.genre === "string" ? book.genre : book.genre?.name}
               </div>
             )}
             {book.pages !== undefined && book.pages !== null && (
-              <div className="flex items-center gap-2 text-neutral-800 text-base">
-                <BookOpen size={18} className="text-neutral-400" />
+              <div className="flex items-center gap-2 text-card-foreground text-base">
+                <BookOpen size={18} className="text-muted-foreground" />
                 <span className="font-semibold">Páginas:</span> {book.pages}
               </div>
             )}
             {book.year !== undefined && book.year !== null && (
-              <div className="flex items-center gap-2 text-neutral-800 text-base">
-                <Calendar size={18} className="text-neutral-400" />
+              <div className="flex items-center gap-2 text-card-foreground text-base">
+                <Calendar size={18} className="text-muted-foreground" />
                 <span className="font-semibold">Ano:</span> {book.year}
               </div>
             )}
             {book.isbn && (
-              <div className="flex items-center gap-2 text-neutral-800 text-base">
-                <Hash size={18} className="text-neutral-400" />
+              <div className="flex items-center gap-2 text-card-foreground text-base">
+                <Hash size={18} className="text-muted-foreground" />
                 <span className="font-semibold">ISBN:</span> {book.isbn}
               </div>
             )}
@@ -178,13 +182,13 @@ export default function BookPage({
           {book.status === "LENDO" && book.pages && (
             <div className="mb-4">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-sm font-medium text-neutral-700">
+                <span className="text-sm font-medium text-accent-foreground">
                   Progresso de leitura:
                 </span>
-                <span className="text-xs text-neutral-500">
+                <span className="text-xs text-accent-foreground">
                   {book.currentPage || 0} / {book.pages} páginas
                 </span>
-                <span className="text-xs text-neutral-500 ">
+                <span className="text-xs text-accent-foreground ">
                   (
                   {(() => {
                     const total = book.pages || 0;
@@ -209,8 +213,10 @@ export default function BookPage({
           {book.synopsis && (
             <>
               <hr className="my-4" />
-              <h3 className="text-lg font-semibold mb-1">Sinopse</h3>
-              <p className="text-neutral-700 leading-relaxed whitespace-pre-line">
+              <h3 className="text-lg font-semibold mb-1 text-card-foreground">
+                Sinopse
+              </h3>
+              <p className="text-card-foreground leading-relaxed whitespace-pre-line">
                 {book.synopsis}
               </p>
             </>
@@ -220,15 +226,17 @@ export default function BookPage({
           {book.notes && (
             <>
               <hr className="my-4" />
-              <h3 className="text-lg font-semibold mb-1">Notas Pessoais</h3>
-              <p className="text-neutral-700 leading-relaxed whitespace-pre-line">
+              <h3 className="text-lg font-semibold mb-1 text-card-foreground">
+                Notas Pessoais
+              </h3>
+              <p className="text-card-foreground leading-relaxed whitespace-pre-line">
                 {book.notes}
               </p>
             </>
           )}
 
           <hr className="my-4" />
-          <div className="flex flex-wrap justify-between text-xs text-neutral-500">
+          <div className="flex flex-wrap justify-between text-xs text-muted-foreground">
             {book.createdAt && (
               <span>Adicionado em: {formatDateToBR(book.createdAt)}</span>
             )}

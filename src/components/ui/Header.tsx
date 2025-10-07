@@ -6,16 +6,14 @@ export function Header() {
   return (
     <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-20">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-bold text-xl"
-        >
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
           <BookOpen size={28} className="text-foreground" />
           <span>BookShelf</span>
         </Link>
 
-         <div className="flex items-center gap-4">
-          <nav className="flex items-center gap-8 text-sm font-medium">
+        <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-4 text-sm font-medium">
+            <ThemeSelector />
             <Link
               href="/"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
@@ -38,7 +36,6 @@ export function Header() {
               <span className="hidden sm:inline">Adicionar Livro</span>
             </Link>
           </nav>
-          <ThemeSelector />
         </div>
       </div>
     </header>

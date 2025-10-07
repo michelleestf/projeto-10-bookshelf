@@ -55,12 +55,12 @@ export function ConfirmDeleteModal({
         if (!open) onCancel();
       }}
     >
-      <DialogContent className="dark:bg-gray-900 dark:border-gray-700">
+      <DialogContent className="bg-card border-border text-card-foreground">
         <DialogHeader>
-          <DialogTitle className="dark:text-gray-100">
+          <DialogTitle className="text-card-foreground">
             Tem certeza que deseja excluir <strong>{bookTitle}</strong>?
           </DialogTitle>
-          <DialogDescription className="dark:text-gray-400">
+          <DialogDescription className="text-muted-foreground">
             Essa ação não pode ser desfeita.
           </DialogDescription>
         </DialogHeader>

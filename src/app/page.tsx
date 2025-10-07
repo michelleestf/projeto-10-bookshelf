@@ -104,7 +104,7 @@ export default function Dashboard() {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
-          <Card className="border border-neutral-200 shadow-sm p-6">
+          <Card className="shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4 text-card-foreground">
               Livros Recentes
             </h2>
@@ -120,7 +120,7 @@ export default function Dashboard() {
           </Card>
         </section>
         <aside>
-          <Card className="border border-neutral-200 shadow-sm p-6">
+          <Card className="shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Ações Rápidas</h2>
             <div className="grid grid-cols-2 gap-4">
               <Link

@@ -106,10 +106,15 @@ export const GenreModal: React.FC<GenreModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(v) => (!v ? onClose() : undefined)}>
-      <DialogContent onInteractOutside={(e) => e.preventDefault()}>
+      <DialogContent
+        onInteractOutside={(e) => e.preventDefault()}
+        className="bg-card border-border text-card-foreground"
+      >
         <DialogHeader>
-          <DialogTitle>Gerenciar gêneros globais</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-card-foreground">
+            Gerenciar gêneros globais
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Os gêneros são <b>globais</b> e compartilhados entre todos os
             livros.
             <br />
@@ -123,7 +128,7 @@ export const GenreModal: React.FC<GenreModalProps> = ({
         <Button
           type="button"
           variant="ghost"
-          className="absolute top-2 right-2 p-1 h-7 w-7 text-gray-500 hover:text-black cursor-pointer"
+          className="absolute top-2 right-2 p-1 h-7 w-7 text-muted-foreground hover:text-card-foreground cursor-pointer"
           onClick={onClose}
           aria-label="Fechar modal"
         >
@@ -177,8 +182,8 @@ export const GenreModal: React.FC<GenreModalProps> = ({
                   genres.some(
                     (g) => g.toLowerCase() === newGenre.trim().toLowerCase()
                   )
-                    ? "bg-gray-300 text-gray-400 cursor-not-allowed"
-                    : "bg-black text-white hover:bg-neutral-800 cursor-pointer"
+                    ? "bg-muted text-muted-foreground cursor-not-allowed"
+                    : "bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground cursor-pointer"
                 }
               `}
             >
@@ -189,7 +194,7 @@ export const GenreModal: React.FC<GenreModalProps> = ({
               )}
             </button>
             {showGenreSuggestions && newGenre.trim() && (
-              <ul className="absolute z-10 left-0 right-0 bg-white border rounded shadow mt-1 max-h-32 overflow-auto text-xs top-full">
+              <ul className="absolute z-10 left-0 right-0 bg-card border border-border rounded shadow mt-1 max-h-32 overflow-auto text-xs top-full">
                 {[...new Set([...allGenreSuggestions, ...genres])]
                   .filter((g) =>
                     g.toLowerCase().includes(newGenre.trim().toLowerCase())
@@ -197,7 +202,7 @@ export const GenreModal: React.FC<GenreModalProps> = ({
                   .map((g) => (
                     <li
                       key={g}
-                      className="px-2 py-1 cursor-pointer hover:bg-neutral-100"
+                      className="px-2 py-1 cursor-pointer hover:bg-muted"
                       onMouseDown={(e) => {
                         e.preventDefault();
                         setNewGenre(g);
@@ -218,7 +223,7 @@ export const GenreModal: React.FC<GenreModalProps> = ({
               genres.map((g) => (
                 <span
                   key={g}
-                  className="inline-flex items-center bg-neutral-100 rounded px-2 py-1 text-xs"
+                  className="inline-flex items-center bg-muted rounded px-2 py-1 text-xs text-card-foreground"
                 >
                   <span title="Gênero global, usado em todos os livros">
                     {g}
@@ -239,7 +244,7 @@ export const GenreModal: React.FC<GenreModalProps> = ({
                 </span>
               ))
             ) : (
-              <span className="text-xs text-neutral-400">
+              <span className="text-xs text-muted-foreground">
                 Nenhum gênero cadastrado.
               </span>
             )}

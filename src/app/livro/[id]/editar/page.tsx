@@ -268,7 +268,7 @@ export default function EditarLivroPage() {
                 })()}
                 className="h-2.5 w-full"
               />
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-accent-foreground">
                 {(() => {
                   const campos = [
                     title,
