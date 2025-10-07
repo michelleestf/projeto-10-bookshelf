@@ -9,7 +9,7 @@ export async function GET() {
   const total = books.length;
   const lendo = books.filter((b) => b.status === "LENDO").length;
   const finalizados = books.filter((b) => b.status === "LIDO").length;
-  const paginas = books.reduce((acc, b) => acc + (b.pages || 0), 0);
+  const paginas = books.reduce((acc, b) => acc + (b.currentPage || 0), 0);
   const recentes = books.slice(0, 3);
   return NextResponse.json({
     stats: { total, lendo, finalizados, paginas },
