@@ -64,19 +64,17 @@ export async function createBook(
   const bookData: any = {
     title: data.title!,
     author: data.author!,
-    status: data.status,
-    pages: data.pages,
-    currentPage: data.currentPage,
-    year: data.year,
-    rating: data.rating,
-    synopsis: data.synopsis,
-    notes: data.notes,
-    cover: data.cover,
-    isbn: data.isbn,
+    ...(data.status && { status: data.status }),
+    ...(data.pages !== undefined && { pages: data.pages }),
+    ...(data.currentPage !== undefined && { currentPage: data.currentPage }),
+    ...(data.year !== undefined && { year: data.year }),
+    ...(data.rating !== undefined && { rating: data.rating }),
+    ...(data.synopsis && { synopsis: data.synopsis }),
+    ...(data.notes && { notes: data.notes }),
+    ...(data.cover && { cover: data.cover }),
+    ...(data.isbn && { isbn: data.isbn }),
+    ...(data.genre ? { genre: { connect: { name: data.genre } } } : {}),
   };
-  if (data.genre) {
-    bookData.genre = { connect: { name: data.genre } };
-  }
   return prisma.book.create({
     data: bookData,
     include: { genre: true },

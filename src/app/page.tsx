@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import type { Book } from "@/lib/books";
 import { Card } from "@/components/ui/Card";
 import { BookCard } from "@/components/ui/BookCard";
 import BookCardSkeleton from "@/components/ui/BookCardSkeleton";
