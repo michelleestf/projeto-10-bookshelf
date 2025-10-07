@@ -1,4 +1,8 @@
 import { prisma } from "./prisma";
+import {
+  BookCreateInput,
+  GenreCreateNestedOneWithoutBooksInput,
+} from "./prisma-types";
 
 export const genres = [
   "Literatura Brasileira",
@@ -61,19 +65,19 @@ export async function getBookById(id: string) {
 export async function createBook(
   data: Omit<Book, "id" | "createdAt" | "updatedAt"> & { genre: string }
 ) {
-  const bookData: any = {
+  const bookData: BookCreateInput = {
     title: data.title!,
     author: data.author!,
-    ...(data.status && { status: data.status }),
-    ...(data.pages !== undefined && { pages: data.pages }),
-    ...(data.currentPage !== undefined && { currentPage: data.currentPage }),
-    ...(data.year !== undefined && { year: data.year }),
-    ...(data.rating !== undefined && { rating: data.rating }),
-    ...(data.synopsis && { synopsis: data.synopsis }),
-    ...(data.notes && { notes: data.notes }),
-    ...(data.cover && { cover: data.cover }),
-    ...(data.isbn && { isbn: data.isbn }),
-    ...(data.genre ? { genre: { connect: { name: data.genre } } } : {}),
+    status: data.status,
+    pages: data.pages,
+    currentPage: data.currentPage,
+    year: data.year,
+    rating: data.rating,
+    synopsis: data.synopsis,
+    notes: data.notes,
+    cover: data.cover,
+    isbn: data.isbn,
+    genre: { connect: { name: data.genre || genres[0] } },
   };
   return prisma.book.create({
     data: bookData,
